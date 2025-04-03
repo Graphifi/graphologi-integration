@@ -93,6 +93,9 @@ let allDataInContentFull = {};
 
 export async function syncData(req, res, next) {
     logDebug("Start syncData");
+    //Clear cached data
+    //TODO think about making it request scope so that it is not shared when concurrent requests
+    allDataInContentFull = {};
     //TODO validate payload before attempting to update
     //There are lots of limitations in Contentful e.g. max count limits, max char counts
     /*
@@ -259,7 +262,7 @@ async function updateTopConceptsList(graphData) {
         let conceptSchemeFromGraphologi = conceptSchemesFromGraphologi[k];
         let conceptSchemeURI = conceptSchemeFromGraphologi.id;
         let conceptSchemeFromContentFul = await getConceptSchemeFromContentFul(conceptSchemeURI);
-        let currentTopConceptsContentfulIds = conceptSchemeFromContentFul["topConcepts"];
+        let currentTopConceptsContentfulIds = toArray(conceptSchemeFromContentFul?.["topConcepts"]);
         let topConceptIdsFromGraphologiCS = conceptSchemeFromGraphologi["hasTopConcept"];
         let topConceptIdsFromContentfulCS = [];
         for (let i=0;i<currentTopConceptsContentfulIds.length;i++) {
@@ -330,8 +333,9 @@ async function updateConceptsList(graphData) {
             }
         }
         let conceptSchemeFromContentFul = await getConceptSchemeFromContentFul(conceptSchemeURI);
-        let currentConceptsContentfulIds = conceptSchemeFromContentFul["concepts"];
+        let currentConceptsContentfulIds = toArray(conceptSchemeFromContentFul?.["concepts"]);
         let conceptURIsFromContentfulCS = [];
+
         for(let i=0;i<currentConceptsContentfulIds.length;i++) {
             let cid = currentConceptsContentfulIds[i].sys.id;
             let c = await getConceptFromContentFul(undefined, cid);
@@ -408,6 +412,8 @@ export async function createConceptScheme(graphologiConceptScheme, locales) {
                 throw Error("Put failed");
             }
             return putResponse;
+        } else {
+            throw new Error(createResponse);
         }
     }
     return createResponse;
@@ -762,7 +768,7 @@ async function handleAPICallFailure(endpoint, request, res ) {
         request : request,
         response : data
     };
-    logInfo("API call failure", JSON.stringify(message, null, 2));
+    logInfo({"error" : "API call failure", data: JSON.stringify(message, null, 2)});
     return message;
 }
 

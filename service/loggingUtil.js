@@ -52,10 +52,12 @@ function setUpLogging() {
         transports: transportTypes
     });
 
+    console.log("Logging level is : " + logger.level);
+
 }
 
 export function isDebugLevel() {
-    return logger.debug === true;
+    return logger.isDebugEnabled();
 }
 
 export function logDebug(message) {
@@ -63,7 +65,7 @@ export function logDebug(message) {
 }
 
 export function logInfo(message) {
-    logger.info({ message });
+    logger.info(JSON.stringify(message ));
 }
 
 export function logError(msg, error) {
