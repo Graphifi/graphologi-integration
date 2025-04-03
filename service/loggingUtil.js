@@ -54,6 +54,10 @@ function setUpLogging() {
 
 }
 
+export function isDebugLevel() {
+    return logger.debug === true;
+}
+
 export function logDebug(message) {
     logger.debug({ message });
 }

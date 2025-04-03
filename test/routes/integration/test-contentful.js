@@ -102,7 +102,6 @@ describe("Contentful integration", () => {
        // await deleteAllConcepts();
        // await deleteAllConceptSchemes();
     });
-
     describe("copyDataPropertyValue", () => {
         it('should copy concept properties', async () => {
             let locales = [{"code": "en"}, {"code": "en-US"}];
@@ -452,6 +451,21 @@ describe("Contentful integration", () => {
     })
 
     describe(" "+taxonomyEndpoint, () => {
+        it("should accept jsonld", async () => {
+            let payload = {
+                "@context": {},
+                "graph": []
+            };
+
+            let {res} = await chai.request(app)
+                .put(taxonomyEndpoint)
+                .set('Content-Type', "application/ld+json")
+                .send(payload);
+
+            expect(res.statusCode).to.be.eql(200);
+
+        })
+
         it("should sync a complex taxonomy", async () => {
             let data = fs.readFileSync("test/routes/integration/go-taxonomy-test1.json", 'utf-8');
             await cleanup(data);
@@ -518,7 +532,7 @@ describe("Contentful integration", () => {
                 let id = r.id;
                 expect(id).not.be.eql(undefined);
                 let concept = allConcepts.find(c => c.uri === id);
-               // expect(concept).to.be.eql(undefined);
+                expect(concept).to.be.eql(undefined);
             })
             let {res} = await chai.request(app)
                 .put(taxonomyEndpoint)

@@ -1,4 +1,4 @@
-import {logDebug, logError, logInfo} from "../loggingUtil.js"
+import {isDebugLevel, logDebug, logInfo} from "../loggingUtil.js"
 
 export const accessToken = process.env.CONTENTFUL_ACCESS_TOKEN;
 export const organizationId = process.env.CONTENTFUL_ORGANIZATION_ID;
@@ -107,6 +107,9 @@ export async function syncData(req, res, next) {
     -
      */
     let data = req.body;
+    if(isDebugLevel()) {
+        logDebug("Data :" + JSON.stringify(data));
+    }
     let allLocales = await getAllLocales();
     let conceptSchemesInContentFul = await getAllConceptSchemes();
     let graphData = data.graph;
