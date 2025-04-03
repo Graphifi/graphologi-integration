@@ -1,10 +1,10 @@
 import express from 'express';
 let router = express.Router();
 
-import {syncData} from "../../service/contentful/taxonomy.js"
 import {authenticate} from "../../service/authentication.js";
+import {process} from "../../controllers/contentfulController.js";
 
 
-router.put('/taxonomy', authenticate, syncData);
+router.put('/taxonomy', authenticate, process);
 
 export const integrationRouter = router;

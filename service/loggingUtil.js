@@ -1,4 +1,3 @@
-const env = process.env.NODE_ENV || 'development';
 const logDir = process.env.LOG_DIRECTORY || "./logs/";
 const logConsole = process.env.LOG_CONSOLE === "true";
 const logLevel = process.env.LOG_LEVEL || "info";

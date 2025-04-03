@@ -1,4 +1,10 @@
-import {accessToken, getAllConcepts, getAllConceptSchemes, organizationId} from "../../service/contentful/taxonomy.js";
+import {
+    accessToken,
+    getAllConcepts,
+    getAllConceptSchemes,
+    organizationId,
+    toArray
+} from "../../service/contentful/taxonomy.js";
 import {expect} from "chai";
 
 export async function deleteConcept(concept) {
@@ -37,11 +43,16 @@ export async function deleteAllConceptSchemes() {
     }
 }
 
-export async function deleteAllConcepts() {
+export async function deleteAllConcepts(ids) {
     let concepts = await getAllConcepts();
+    let idsArray = toArray(ids);
     for(let i=0;i<concepts.length;i++) {
         let concept = concepts[i];
-        await deleteConcept(concept);
+        if(idsArray.length > 0 && !idsArray.includes(concept.uri)) {
+            //skip this concept
+        } else {
+            await deleteConcept(concept);
+        }
     }
 }
 

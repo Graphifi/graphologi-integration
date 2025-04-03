@@ -1,4 +1,5 @@
 import {isDebugLevel, logDebug, logInfo} from "../loggingUtil.js"
+import {deleteConcept} from "../../test/util/contentfulUtil.js";
 
 export const accessToken = process.env.CONTENTFUL_ACCESS_TOKEN;
 export const organizationId = process.env.CONTENTFUL_ORGANIZATION_ID;
@@ -91,7 +92,7 @@ export function toArray(value) {
 
 let allDataInContentFull = {};
 
-export async function syncData(req, res, next) {
+export async function syncData(data) {
     logDebug("Start syncData");
     //Clear cached data
     //TODO think about making it request scope so that it is not shared when concurrent requests
@@ -109,7 +110,6 @@ export async function syncData(req, res, next) {
         Taxonomy schemes	20	Number per organization
     -
      */
-    let data = req.body;
     if(isDebugLevel()) {
         logDebug("Data :" + JSON.stringify(data));
     }
@@ -123,7 +123,7 @@ export async function syncData(req, res, next) {
         let cs = conceptSchemesFromGraphologi[k];
         await createConceptScheme(cs, allLocales);
         //Walk tree and create concept hierarchy first
-        let topConceptIds = cs["hasTopConcept"];
+        let topConceptIds = toArray(cs["hasTopConcept"]);
         for(let i = 0;i < topConceptIds.length;i++) {
             let tid = topConceptIds[i];
             let graphologiConcept = graphData.find(gd => gd.id === tid);
@@ -135,7 +135,7 @@ export async function syncData(req, res, next) {
     //Contentful only use broader so we just update that
     for(let k =0; k < conceptSchemesFromGraphologi.length; k++) {
         let cs = conceptSchemesFromGraphologi[k];
-        let topConceptIds = cs["hasTopConcept"];
+        let topConceptIds = toArray(cs["hasTopConcept"]);
         for(let i = 0;i < topConceptIds.length;i++) {
             let tid = topConceptIds[i];
             let graphologiConcept = graphData.find(gd => gd.id === tid);
@@ -171,10 +171,40 @@ export async function syncData(req, res, next) {
     //Adding top concepts before adding concept in scheme will fail
     await updateTopConceptsList(graphData);
 
+    //Now delete any leftovers
+    for(let k =0; k < conceptSchemesFromGraphologi.length; k++) {
+        let cs = conceptSchemesFromGraphologi[k];
+        let csFromContentFul = await getConceptSchemeFromContentFul(cs.id);
+        let topConceptIds = toArray(cs["hasTopConcept"]);
+        let conceptURIsToKeepInCS = [...topConceptIds];
+        for(let i = 0;i < topConceptIds.length;i++) {
+            let tid = topConceptIds[i];
+            let graphologiConcept = graphData.find(gd => gd.id === tid);
+            await walkAndCollectNarrowerConceptIds(cs.id, graphologiConcept, graphData, conceptURIsToKeepInCS);
+        }
+        let currentCFConceptIds = toArray(csFromContentFul['concepts']).map(c => c.sys.id);
+        toArray(csFromContentFul['topConcepts']).forEach(t => {
+            currentCFConceptIds.push(t.sys.id);
+        })
+        let newConceptsIdsContentFul = [];
+        for(let i=0;i<conceptURIsToKeepInCS.length;i++) {
+            let id = conceptURIsToKeepInCS[i];
+            let conceptFromCF = await getConceptFromContentFul(id);
+            if(conceptFromCF) {
+                newConceptsIdsContentFul.push(conceptFromCF.sys.id);
+            }
+        }
+        let uniqCurrentCFConceptIds = [...new Set(currentCFConceptIds)];
+        for(let i=0;i<uniqCurrentCFConceptIds.length;i++) {
+            let cid = uniqCurrentCFConceptIds[i];
+            if(!newConceptsIdsContentFul.includes(cid)) {
+                let cfConcept = await getConceptFromContentFul(undefined, cid);
+                await deleteConcept(cfConcept);
+            }
+        }
+    }
 
-    //Now delete any left overs
 
-    res.status(200).send("Done");
 }
 
 async function walkAndCreateNarrowerConcepts(conceptSchemeId, broaderConceptInGraphologi, allLocales, graphData) {
@@ -199,6 +229,16 @@ export function listsEqual(first, second) {
         }
     }
     return true;
+}
+
+async function walkAndCollectNarrowerConceptIds(conceptSchemeId, broaderConceptInGraphologi, graphData, collector) {
+    let narrowerConceptIds = toArray(broaderConceptInGraphologi['narrower']);
+    narrowerConceptIds.forEach(nid => collector.push(nid));
+    for (let j = 0; j < narrowerConceptIds.length; j++) {
+        let nid = narrowerConceptIds[j];
+        let graphologiConcept = graphData.find(gd => gd.id === nid);
+        await walkAndCollectNarrowerConceptIds(conceptSchemeId, graphologiConcept, graphData, collector);
+    }
 }
 
 async function walkAndAttachNarrowerConcepts(conceptSchemeId, broaderConceptInGraphologi, allLocales, graphData) {
@@ -263,7 +303,7 @@ async function updateTopConceptsList(graphData) {
         let conceptSchemeURI = conceptSchemeFromGraphologi.id;
         let conceptSchemeFromContentFul = await getConceptSchemeFromContentFul(conceptSchemeURI);
         let currentTopConceptsContentfulIds = toArray(conceptSchemeFromContentFul?.["topConcepts"]);
-        let topConceptIdsFromGraphologiCS = conceptSchemeFromGraphologi["hasTopConcept"];
+        let topConceptIdsFromGraphologiCS = toArray(conceptSchemeFromGraphologi["hasTopConcept"]);
         let topConceptIdsFromContentfulCS = [];
         for (let i=0;i<currentTopConceptsContentfulIds.length;i++) {
             let cid = currentTopConceptsContentfulIds[i].sys.id;
@@ -468,6 +508,7 @@ async function hasChange(existingResource, payload) {
 }
 
 export async function createConcept(graphologiConcept, locales, additionalPropertiesSetter) {
+    logInfo("Creating concept: "+graphologiConcept.id);
     let payload = copyDataPropertyValue(typeConcept, graphologiConcept, locales);
     if(additionalPropertiesSetter) {
         additionalPropertiesSetter(payload)
@@ -759,16 +800,19 @@ async function patchToContentful(endpoint, payload, version) {
 }
 
 async function handleAPICallFailure(endpoint, request, res ) {
-    //TODO add logging
     const data = await res.json();
+    //Prepare data for logging
     request.headers.Authorization = "*****";
+    if(request.body) {
+        request.body = JSON.parse(request.body);
+    }
     let message = {
         endpoint,
         status : res.status,
         request : request,
         response : data
     };
-    logInfo({"error" : "API call failure", data: JSON.stringify(message, null, 2)});
+    logInfo({"error" : "API call failure", data: message});
     return message;
 }
 
