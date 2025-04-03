@@ -1,0 +1,27 @@
+{
+  "name": "graphologi-integration",
+  "version": "0.0.0",
+  "private": true,
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "export PORT=3005; nodemon ./bin/www ",
+    "test": "mocha --recursive --timeout 20000"
+  },
+  "dependencies": {
+    "@dotenvx/dotenvx": "^1.39.0",
+    "express": "^5.1.0",
+    "morgan": "^1.10.0",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.5.0",
+    "chai-http": "^4.4.0",
+    "mocha": "^11.1.0",
+    "nodemon": "^3.1.9"
+  },
+  "volta": {
+    "node": "22.14.0"
+  }
+}

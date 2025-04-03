@@ -1,0 +1,1753 @@
+{
+  "graph": [
+    {
+      "id": "https://example.com/test2/Test2TopConcept1",
+      "created": "2025-04-02T17:00:06.682Z",
+      "narrower": [
+        "https://example.com/test1/TopConcept1"
+      ],
+      "prefLabel": {
+        "en-us": "Test 2 Top Concept 1"
+      },
+      "topConceptOf": [
+        "https://example.com/test2"
+      ],
+      "inScheme": [
+        "https://example.com/test2"
+      ],
+      "revisionNo": 2,
+      "modified": "2025-04-02T17:01:15.323Z",
+      "type": "Concept"
+    },
+    {
+      "id": "https://example.com/test1/TopConcept1Child2",
+      "created": "2025-03-31T21:15:31.592Z",
+      "broader": [
+        "https://example.com/test1/TopConcept1"
+      ],
+      "prefLabel": {
+        "en-us": "Top Concept 1 Child 2"
+      },
+      "inScheme": [
+        "https://example.com/test1"
+      ],
+      "modified": "2025-04-02T16:18:22.429Z",
+      "type": "Concept"
+    },
+    {
+      "id": "https://example.com/test1/TopConcept1",
+      "prefLabel": {
+        "en-us": "Top Concept 1"
+      },
+      "editorialNote": {
+        "en-us": "Top Concept 1 Editorial Note 1"
+      },
+      "narrower": [
+        "https://example.com/test1/TopConcept1Child1",
+        "https://example.com/test1/TopConcept1Child2"
+      ],
+      "related": [
+        "https://example.com/test1/TopConcept1Child1Child11",
+        "https://example.com/test1/TopConcept2Child2",
+        "https://example.com/test1/TopConcept2"
+      ],
+      "notation": [
+        "Top Concept 1 notation 2",
+        "Top Concept 1 notation 1"
+      ],
+      "topConceptOf": [
+        "https://example.com/test1"
+      ],
+      "scopeNote": {
+        "en-us": "Top Concept 1 Scope Note 1"
+      },
+      "definition": {
+        "en-us": "Top Concept 1 Definition 1"
+      },
+      "revisionNo": 5,
+      "example": {
+        "en-us": [
+          "Top Concept 1 Example 2",
+          "Top Concept 1 Example 1"
+        ]
+      },
+      "broader": [
+        "https://example.com/test2/Test2TopConcept1"
+      ],
+      "altLabel": {
+        "en-us": "Top Concept 1 Alternative Label 1"
+      },
+      "historyNote": {
+        "en-us": "Top Concept 1 History Note 1"
+      },
+      "type": "Concept",
+      "inScheme": [
+        "https://example.com/test2",
+        "https://example.com/test1"
+      ],
+      "hiddenLabel": {
+        "en-us": "Top Concept 1 Hidden Label 1"
+      },
+      "changeNote": {
+        "en-us": "Top Concept 1 Change Note 1"
+      },
+      "created": "2025-03-31T21:14:17.577Z",
+      "modified": "2025-04-02T17:01:15.323Z"
+    },
+    {
+      "id": "https://example.com/test2",
+      "minimiseEncoding": true,
+      "created": "2025-04-02T16:59:28.686Z",
+      "hasTopConcept": [
+        "https://example.com/test2/Test2TopConcept1",
+        "https://example.com/test2/Test2TopConcept2"
+      ],
+      "isComponentOf": [
+        "https://grafsync.graphifi.com/data/project/885f9ab1-0553-48a5-803f-f4d1f63688b6"
+      ],
+      "useSlashIRI": true,
+      "useXL": false,
+      "title": {
+        "en-us": "Test 2"
+      },
+      "useUuidIRI": false,
+      "type": "ConceptScheme",
+      "iriRemoveSpecialCharacters": true,
+      "iriRemoveSpaces": true,
+      "modified": "2025-04-02T17:00:20.608Z",
+      "revisionNo": 5
+    },
+    {
+      "id": "https://example.com/test1/TopConcept2Child2",
+      "created": "2025-03-31T21:15:21.568Z",
+      "related": [
+        "https://example.com/test1/TopConcept1Child1Child11",
+        "https://example.com/test1/TopConcept1"
+      ],
+      "broader": [
+        "https://example.com/test1/TopConcept2"
+      ],
+      "prefLabel": {
+        "en-us": "Top Concept 2 Child 2"
+      },
+      "inScheme": [
+        "https://example.com/test1"
+      ],
+      "modified": "2025-04-02T16:18:22.429Z",
+      "type": "Concept"
+    },
+    {
+      "id": "https://example.com/test1/TopConcept1Child1Child11",
+      "editorialNote": {
+        "en-us": [
+          "Top Concept 1 Child 1 Child 1 Editorial Note 1",
+          "Top Concept 1 Child 1 Child 1 Editorial Note 2"
+        ]
+      },
+      "hiddenLabel": {
+        "en-us": [
+          "Top Concept 1 Child 1 Child 1 Hidden Label 1",
+          "Top Concept 1 Child 1 Child 1 Hidden Label 2"
+        ]
+      },
+      "inScheme": [
+        "https://example.com/test1",
+        "https://example.com/test2"
+      ],
+      "revisionNo": 2,
+      "scopeNote": {
+        "en-us": [
+          "Top Concept 1 Child 1 Child 1 Scope Note 2",
+          "Top Concept 1 Child 1 Child 1 Scope Note 1"
+        ]
+      },
+      "altLabel": {
+        "en-us": [
+          "Top Concept 1 Child 1 Child 1 Alternative Label 1",
+          "Top Concept 1 Child 1 Child 1 Alternative Label 2"
+        ]
+      },
+      "modified": [
+        "2025-04-02T17:01:35.89Z",
+        "2025-04-02T16:14:53.37Z"
+      ],
+      "broader": [
+        "https://example.com/test1/TopConcept1Child1"
+      ],
+      "historyNote": {
+        "en-us": [
+          "Top Concept 1 Child 1 Child 1 History Note 1",
+          "Top Concept 1 Child 1 Child 1 History Note 2"
+        ]
+      },
+      "changeNote": {
+        "en-us": [
+          "Top Concept 1 Child 1 Child 1 Change Note 1",
+          "Top Concept 1 Child 1 Child 1 Change Note 2"
+        ]
+      },
+      "type": "Concept",
+      "prefLabel": {
+        "en-us": "Top Concept 1 Child 1 Child 1"
+      },
+      "example": {
+        "en-us": [
+          "Top Concept 1 Child 1 Child 1 Example 2",
+          "Top Concept 1 Child 1 Child 1 Example 1"
+        ]
+      },
+      "related": [
+        "https://example.com/test1/TopConcept2Child2",
+        "https://example.com/test1/TopConcept2Child1",
+        "https://example.com/test1/TopConcept2",
+        "https://example.com/test1/TopConcept1"
+      ],
+      "created": "2025-03-31T21:14:59.103Z"
+    },
+    {
+      "id": "https://example.com/test2/Test2TopConcept2",
+      "created": "2025-04-02T17:00:20.505Z",
+      "narrower": [
+        "https://example.com/test1/TopConcept2"
+      ],
+      "prefLabel": {
+        "en-us": "Test 2 Top Concept 2"
+      },
+      "topConceptOf": [
+        "https://example.com/test2"
+      ],
+      "inScheme": [
+        "https://example.com/test2"
+      ],
+      "revisionNo": 2,
+      "modified": "2025-04-02T17:01:27.69Z",
+      "type": "Concept"
+    },
+    {
+      "id": "https://example.com/test1/TopConcept2",
+      "inScheme": [
+        "https://example.com/test1",
+        "https://example.com/test2"
+      ],
+      "related": [
+        "https://example.com/test1/TopConcept1",
+        "https://example.com/test1/TopConcept1Child1Child11"
+      ],
+      "narrower": [
+        "https://example.com/test1/TopConcept2Child1",
+        "https://example.com/test1/TopConcept2Child2"
+      ],
+      "revisionNo": 4,
+      "created": "2025-03-31T21:14:25.227Z",
+      "topConceptOf": [
+        "https://example.com/test1"
+      ],
+      "prefLabel": {
+        "en-us": "Top Concept 2"
+      },
+      "broader": [
+        "https://example.com/test2/Test2TopConcept2"
+      ],
+      "type": "Concept",
+      "modified": "2025-04-02T17:01:27.69Z"
+    },
+    {
+      "id": "https://grafsync.graphifi.com/data/project/885f9ab1-0553-48a5-803f-f4d1f63688b6",
+      "modified": "2025-04-02T16:59:28.76Z",
+      "projectLang": [
+        "en",
+        "en-us"
+      ],
+      "title": {
+        "en-us": "CF"
+      },
+      "hasComponent": [
+        "https://example.com/test2",
+        "https://example.com/test1"
+      ],
+      "type": "TaxonomyProject",
+      "created": "2025-03-31T21:13:32.432Z",
+      "projectColour": "13294B",
+      "revisionNo": 6,
+      "defaultLang": "en-us"
+    },
+    {
+      "id": "https://example.com/test1/TopConcept1Child1",
+      "scopeNote": {
+        "en-us": [
+          "Top Concept 1 Child 1 Scope Note 2",
+          "Top Concept 1 Child 1 Scope Note 1"
+        ]
+      },
+      "notation": [
+        "Top Concept 1 Child 1 Notation 1",
+        "Top Concept 1 Child 1 Notation 2"
+      ],
+      "prefLabel": {
+        "en-us": "Top Concept 1 Child 1"
+      },
+      "changeNote": {
+        "en-us": [
+          "Top Concept 1 Child 1 Change Note 1",
+          "Top Concept 1 Child 1 Change Note 2"
+        ]
+      },
+      "broader": [
+        "https://example.com/test1/TopConcept1"
+      ],
+      "hiddenLabel": {
+        "en-us": [
+          "Top Concept 1 Child 1 Hidden Label 1",
+          "Top Concept 1 Child 1 Hidden Label 2"
+        ]
+      },
+      "modified": "2025-04-02T16:18:22.429Z",
+      "altLabel": {
+        "en-us": [
+          "Top Concept 1 Child 1 Alternative Label 1",
+          "Top Concept 1 Child 1 Alternative Label 2"
+        ]
+      },
+      "example": {
+        "en-us": [
+          "Top Concept 1 Child 1 Example 2",
+          "Top Concept 1 Child 1 Example 1"
+        ]
+      },
+      "type": "Concept",
+      "historyNote": {
+        "en-us": [
+          "Top Concept 1 Child 1 History Note 2",
+          "Top Concept 1 Child 1 History Note 1"
+        ]
+      },
+      "editorialNote": {
+        "en-us": [
+          "Top Concept 1 Child 1 Editorial Note 1",
+          "Top Concept 1 Child 1 Editorial Note 2"
+        ]
+      },
+      "created": "2025-03-31T21:14:51.516Z",
+      "inScheme": [
+        "https://example.com/test1"
+      ],
+      "narrower": [
+        "https://example.com/test1/TopConcept1Child1Child11"
+      ],
+      "related": [
+        "https://example.com/test1/TopConcept2Child1"
+      ]
+    },
+    {
+      "id": "https://example.com/test1",
+      "hasTopConcept": [
+        "https://example.com/test1/TopConcept2",
+        "https://example.com/test1/TopConcept1"
+      ],
+      "type": "ConceptScheme",
+      "created": "2025-03-31T21:14:04.931Z",
+      "modified": [
+        "2025-04-02T16:20:21.606Z",
+        "2025-03-31T21:19:40.742Z"
+      ],
+      "revisionNo": 2,
+      "useSlashIRI": true,
+      "title": {
+        "en-us": "Test 1"
+      },
+      "useUuidIRI": false,
+      "iriRemoveSpaces": true,
+      "iriRemoveSpecialCharacters": true,
+      "useXL": false,
+      "minimiseEncoding": true
+    },
+    {
+      "id": "https://example.com/test1/TopConcept2Child1",
+      "created": "2025-03-31T21:15:07.765Z",
+      "related": [
+        "https://example.com/test1/TopConcept1Child1Child11",
+        "https://example.com/test1/TopConcept1Child1"
+      ],
+      "broader": [
+        "https://example.com/test1/TopConcept2"
+      ],
+      "prefLabel": {
+        "en-us": "Top Concept 2 Child 1"
+      },
+      "inScheme": [
+        "https://example.com/test1"
+      ],
+      "modified": "2025-04-02T16:18:22.429Z",
+      "type": "Concept"
+    }
+  ],
+  "@context": {
+    "id": "@id",
+    "type": "@type",
+    "graph": "@graph",
+    "language": "@language",
+    "LabelCount": "https://grafsync.graphifi.com/schema/vm-skos-view/LabelCount",
+    "tsvTemplateOption": {
+      "@id": "https://grafsync.graphifi.com/schema/tsv/templateOption",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "tsvTemplateProject": {
+      "@id": "https://grafsync.graphifi.com/schema/tsv/templateProject",
+      "@type": "@id"
+    },
+    "tsvTemplateTarget": {
+      "@id": "https://grafsync.graphifi.com/schema/tsv/templateTarget",
+      "@type": "@id"
+    },
+    "tsvColumnProperty": {
+      "@id": "https://grafsync.graphifi.com/schema/tsv/columnProperty",
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "tsvColumnLanguage": {
+      "@id": "https://grafsync.graphifi.com/schema/tsv/columnLanguage",
+      "@container": "@list"
+    },
+    "viewStatistic": {
+      "@id": "https://grafsync.graphifi.com/schema/vm-skos-view/statistic",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "viewCount": "https://grafsync.graphifi.com/schema/vm-skos-view/count",
+    "viewCountType": "https://grafsync.graphifi.com/schema/vm-skos-view/countType",
+    "viewLanguage": "https://grafsync.graphifi.com/schema/vm-skos-view/language",
+    "narrowerRelatedRelationClash": {
+      "@id": "https://grafsync.graphifi.com/schema/vm-skos-quality/narrowerRelatedRelationClash",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "broaderRelatedRelationClash": {
+      "@id": "https://grafsync.graphifi.com/schema/vm-skos-quality/broaderRelatedRelationClash",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "inconsistentWithRange": {
+      "@id": "https://grafsync.graphifi.com/schema/vm-skos-quality/inconsistentWithRange",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "samePrefLabelViolation": {
+      "@id": "https://grafsync.graphifi.com/schema/vm-skos-quality/samePrefLabelViolation",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "asymmetricViolation": {
+      "@id": "https://grafsync.graphifi.com/schema/vm-skos-quality/asymmetricViolation",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "classPropertyIssue": {
+      "@id": "https://grafsync.graphifi.com/schema/om-owl-quality/classPropertyIssue",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "cyclicSubclass": {
+      "@id": "https://grafsync.graphifi.com/schema/om-owl-quality/cyclicSubclass",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "conflictingTypes": {
+      "@id": "https://grafsync.graphifi.com/schema/om-owl-quality/conflictingTypes",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "symmetricAsymmetricInverse": {
+      "@id": "https://grafsync.graphifi.com/schema/om-owl-quality/symmetricAsymmetricInverse",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "disjointnessInconsistency": {
+      "@id": "https://grafsync.graphifi.com/schema/om-owl-quality/disjointnessInconsistency",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "differentFromSameAsViolation": {
+      "@id": "https://grafsync.graphifi.com/schema/om-owl-quality/differentFromSameAsViolation",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "invalidSameAs": {
+      "@id": "https://grafsync.graphifi.com/schema/om-owl-quality/invalidSameAs",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "invalidDifferentFrom": {
+      "@id": "https://grafsync.graphifi.com/schema/om-owl-quality/invalidDifferentFrom",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "invalidIFP": {
+      "@id": "https://grafsync.graphifi.com/schema/om-owl-quality/invalidIFP",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "incompleteRestriction": {
+      "@id": "https://grafsync.graphifi.com/schema/om-owl-quality/incompleteRestriction",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "invalidEquivalentProperty": {
+      "@id": "https://grafsync.graphifi.com/schema/om-owl-quality/invalidEquivalentProperty",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "invalidEquivalentClass": {
+      "@id": "https://grafsync.graphifi.com/schema/om-owl-quality/invalidEquivalentClass",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "subclassDisjointnessInconsistency": {
+      "@id": "https://grafsync.graphifi.com/schema/om-owl-quality/subclassDisjointnessInconsistency",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "multipleSubclassDisjointnessInconsistency": {
+      "@id": "https://grafsync.graphifi.com/schema/om-owl-quality/multipleSubclassDisjointnessInconsistency",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "disjointnessEquivalenceInconsistency": {
+      "@id": "https://grafsync.graphifi.com/schema/om-owl-quality/disjointnessEquivalenceInconsistency",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "equivalencyInconsistency": {
+      "@id": "https://grafsync.graphifi.com/schema/om-owl-quality/equivalencyInconsistency",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "inversePropertyIssue": {
+      "@id": "https://grafsync.graphifi.com/schema/om-owl-quality/inversePropertyIssue",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "qualityResourceExists": {
+      "@id": "https://grafsync.graphifi.com/schema/om-owl-quality/qualityResourceExists",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "disjointIndividualClassViolation": {
+      "@id": "https://grafsync.graphifi.com/schema/om-owl-quality/disjointIndividualClassViolation",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "cyclicWith": {
+      "@id": "https://grafsync.graphifi.com/schema/vm-skos-quality/cyclicWith",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "disjointClassViolation": {
+      "@id": "https://grafsync.graphifi.com/schema/vm-skos-quality/disjointClassViolation",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "disjointPropertyViolation": {
+      "@id": "https://grafsync.graphifi.com/schema/vm-skos-quality/disjointPropertyViolation",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "monohierarchyViolation": {
+      "@id": "https://grafsync.graphifi.com/schema/vm-skos-quality/monohierarchyViolation",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "prefAltLabelViolation": {
+      "@id": "https://grafsync.graphifi.com/schema/vm-skos-quality/prefAltLabelViolation",
+      "@container": "@language"
+    },
+    "prefHiddenLabelViolation": {
+      "@id": "https://grafsync.graphifi.com/schema/vm-skos-quality/prefHiddenLabelViolation",
+      "@container": "@language"
+    },
+    "altHiddenLabelViolation": {
+      "@id": "https://grafsync.graphifi.com/schema/vm-skos-quality/altHiddenLabelViolation",
+      "@container": "@language"
+    },
+    "altAltLabelViolation": {
+      "@id": "https://grafsync.graphifi.com/schema/vm-skos-quality/altAltLabelViolation",
+      "@container": "@language"
+    },
+    "hiddenHiddenLabelViolation": {
+      "@id": "https://grafsync.graphifi.com/schema/vm-skos-quality/hiddenHiddenLabelViolation",
+      "@container": "@language"
+    },
+    "multiplePrefLabelViolation": {
+      "@id": "https://grafsync.graphifi.com/schema/vm-skos-quality/multiplePrefLabelViolation",
+      "@container": "@language"
+    },
+    "multiplePropValueViolation": {
+      "@id": "https://grafsync.graphifi.com/schema/vm-skos-quality/multiplePropValueViolation",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "skosXL": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/skosXL",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "useXL": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/useXL",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "hasSubClass": {
+      "@id": "https://graphifi.com/schema/xowl/hasSubClass",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "hasSubDataProperty": {
+      "@id": "https://graphifi.com/schema/xowl/hasSubDataProperty",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "subDataPropertyOf": {
+      "@id": "https://graphifi.com/schema/xowl/subDataPropertyOf",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "hasSubProperty": {
+      "@id": "https://graphifi.com/schema/xowl/hasSubProperty",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "hasSubObjectProperty": {
+      "@id": "https://graphifi.com/schema/xowl/hasSubObjectProperty",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "subObjectPropertyOf": {
+      "@id": "https://graphifi.com/schema/xowl/subObjectPropertyOf",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "hasSubAnnotationProperty": {
+      "@id": "https://graphifi.com/schema/xowl/hasSubAnnotationProperty",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "subAnnotationPropertyOf": {
+      "@id": "https://graphifi.com/schema/xowl/subAnnotationPropertyOf",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "isXlAltLabelOf": {
+      "@type": "@id",
+      "@id": "https://graphifi.com/schema/xkos/isXlAltLabelOf"
+    },
+    "isXlHiddenLabelOf": {
+      "@type": "@id",
+      "@id": "https://graphifi.com/schema/xkos/isXlHiddenLabelOf"
+    },
+    "isXlPrefLabelOf": {
+      "@type": "@id",
+      "@id": "https://graphifi.com/schema/xkos/isXlPrefLabelOf"
+    },
+    "ontologyProjectAssociation": {
+      "@type": "@id",
+      "@id": "https://grafsync.graphifi.com/schema/vm/ontologyProjectAssociation",
+      "@container": "@set"
+    },
+    "OntologyProjectAssociation": "https://grafsync.graphifi.com/schema/vm/OntologyProjectAssociation",
+    "associatedTemplate": {
+      "@type": "@id",
+      "@id": "https://grafsync.graphifi.com/schema/vm/associatedTemplate",
+      "@container": "@set"
+    },
+    "associatedProject": {
+      "@type": "@id",
+      "@id": "https://grafsync.graphifi.com/schema/vm/associatedProject"
+    },
+    "associatedOntology": {
+      "@type": "@id",
+      "@id": "https://grafsync.graphifi.com/schema/vm/associatedOntology"
+    },
+    "associatedClass": {
+      "@type": "@id",
+      "@id": "https://grafsync.graphifi.com/schema/vm/associatedClass",
+      "@container": "@set"
+    },
+    "associatedProperty": {
+      "@type": "@id",
+      "@id": "https://grafsync.graphifi.com/schema/vm/associatedProperty",
+      "@container": "@set"
+    },
+    "xlPrefLabel": {
+      "@id": "http://www.w3.org/2008/05/skos-xl#prefLabel",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "xlAltLabel": {
+      "@id": "http://www.w3.org/2008/05/skos-xl#altLabel",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "xlHiddenLabel": {
+      "@id": "http://www.w3.org/2008/05/skos-xl#hiddenLabel",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "xlLabelRelation": {
+      "@id": "http://www.w3.org/2008/05/skos-xl#labelRelation",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "literalForm": {
+      "@id": "http://www.w3.org/2008/05/skos-xl#literalForm",
+      "@container": "@language"
+    },
+    "description": {
+      "@id": "http://purl.org/dc/terms/description",
+      "@container": "@language"
+    },
+    "related": {
+      "@id": "http://www.w3.org/2004/02/skos/core#related",
+      "@container": "@set",
+      "@type": "@id"
+    },
+    "altLabel": {
+      "@id": "http://www.w3.org/2004/02/skos/core#altLabel",
+      "@container": "@language"
+    },
+    "hiddenLabel": {
+      "@id": "http://www.w3.org/2004/02/skos/core#hiddenLabel",
+      "@container": "@language"
+    },
+    "prefLabel": {
+      "@id": "http://www.w3.org/2004/02/skos/core#prefLabel",
+      "@container": "@language"
+    },
+    "notation": {
+      "@id": "http://www.w3.org/2004/02/skos/core#notation",
+      "@container": "@set"
+    },
+    "definition": {
+      "@id": "http://www.w3.org/2004/02/skos/core#definition",
+      "@container": "@language"
+    },
+    "editorialNote": {
+      "@id": "http://www.w3.org/2004/02/skos/core#editorialNote",
+      "@container": "@language"
+    },
+    "scopeNote": {
+      "@id": "http://www.w3.org/2004/02/skos/core#scopeNote",
+      "@container": "@language"
+    },
+    "changeNote": {
+      "@id": "http://www.w3.org/2004/02/skos/core#changeNote",
+      "@container": "@language"
+    },
+    "historyNote": {
+      "@id": "http://www.w3.org/2004/02/skos/core#historyNote",
+      "@container": "@language"
+    },
+    "example": {
+      "@id": "http://www.w3.org/2004/02/skos/core#example",
+      "@container": "@language"
+    },
+    "broader": {
+      "@id": "http://www.w3.org/2004/02/skos/core#broader",
+      "@container": "@set",
+      "@type": "@id"
+    },
+    "narrower": {
+      "@id": "http://www.w3.org/2004/02/skos/core#narrower",
+      "@container": "@set",
+      "@type": "@id"
+    },
+    "exactMatch": {
+      "@id": "http://www.w3.org/2004/02/skos/core#exactMatch",
+      "@container": "@set",
+      "@type": "@id"
+    },
+    "relatedMatch": {
+      "@id": "http://www.w3.org/2004/02/skos/core#relatedMatch",
+      "@container": "@set",
+      "@type": "@id"
+    },
+    "closeMatch": {
+      "@id": "http://www.w3.org/2004/02/skos/core#closeMatch",
+      "@container": "@set",
+      "@type": "@id"
+    },
+    "narrowMatch": {
+      "@id": "http://www.w3.org/2004/02/skos/core#narrowMatch",
+      "@container": "@set",
+      "@type": "@id"
+    },
+    "broadMatch": {
+      "@id": "http://www.w3.org/2004/02/skos/core#broadMatch",
+      "@container": "@set",
+      "@type": "@id"
+    },
+    "hasTopConcept": {
+      "@id": "http://www.w3.org/2004/02/skos/core#hasTopConcept",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "topConceptOf": {
+      "@id": "http://www.w3.org/2004/02/skos/core#topConceptOf",
+      "@container": "@set",
+      "@type": "@id"
+    },
+    "broaderTransitive": {
+      "@id": "http://www.w3.org/2004/02/skos/core#broaderTransitive",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "narrowerTransitive": {
+      "@id": "http://www.w3.org/2004/02/skos/core#narrowerTransitive",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "inScheme": {
+      "@id": "http://www.w3.org/2004/02/skos/core#inScheme",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "member": {
+      "@id": "http://www.w3.org/2004/02/skos/core#member",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "memberList": {
+      "@id": "http://www.w3.org/2004/02/skos/core#memberList",
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "suggestionAcceptanceNote": {
+      "@id": "https://grafsync.graphifi.com/schema/vm/suggestionAccceptanceNote",
+      "@container": "@language"
+    },
+    "suggestionRejectionNote": {
+      "@id": "https://grafsync.graphifi.com/schema/vm/suggestionRejectionNote",
+      "@container": "@language"
+    },
+    "suggestionAcceptanceUser": {
+      "@id": "https://grafsync.graphifi.com/schema/vm/suggestionAcceptanceUser",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "suggestionAcceptanceStatus": {
+      "@id": "https://grafsync.graphifi.com/schema/vm/suggestionAcceptanceStatus",
+      "@type": "@id"
+    },
+    "suggestionRejectionUser": {
+      "@id": "https://grafsync.graphifi.com/schema/vm/suggestionRejectionUser",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "suggestionTargetConcept": {
+      "@id": "https://grafsync.graphifi.com/schema/vm/suggestionTargetConcept",
+      "@type": "@id"
+    },
+    "suggestionSourceConcept": {
+      "@id": "https://grafsync.graphifi.com/schema/vm/suggestionSourceConcept",
+      "@type": "@id"
+    },
+    "suggestionParentConcept": {
+      "@id": "https://grafsync.graphifi.com/schema/vm/suggestionParentConcept",
+      "@type": "@id"
+    },
+    "suggestionInsertIRI": {
+      "@id": "https://grafsync.graphifi.com/schema/vm/suggestionInsertIRI",
+      "@type": "@id"
+    },
+    "suggestionLabelInsertIRI": {
+      "@id": "https://grafsync.graphifi.com/schema/vm/suggestionLabelInsertIRI",
+      "@type": "@id"
+    },
+    "isSuggestionTargetOf": {
+      "@id": "https://grafsync.graphifi.com/schema/vm/isSuggestionTargetOf",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "isSuggestionSourceOf": {
+      "@id": "https://grafsync.graphifi.com/schema/vm/isSuggestionSourceOf",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "isSuggestionParentOf": {
+      "@id": "https://grafsync.graphifi.com/schema/vm/isSuggestionParentOf",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "TaxonomyProject": "https://grafsync.graphifi.com/schema/gs/TaxonomyProject",
+    "OntologyProject": "https://grafsync.graphifi.com/schema/gs/OntologyProject",
+    "Label": "http://www.w3.org/2008/05/skos-xl#Label",
+    "Ontology": "http://www.w3.org/2002/07/owl#Ontology",
+    "ConceptScheme": "http://www.w3.org/2004/02/skos/core#ConceptScheme",
+    "Concept": "http://www.w3.org/2004/02/skos/core#Concept",
+    "Collection": "http://www.w3.org/2004/02/skos/core#Collection",
+    "OrderedCollection": "http://www.w3.org/2004/02/skos/core#OrderedCollection",
+    "SpellingSuggestion": "https://grafsync.graphifi.com/schema/vm/SpellingSuggestion",
+    "TerminologySuggestion": "https://grafsync.graphifi.com/schema/vm/TerminologySuggestion",
+    "NewConceptSuggestion": "https://grafsync.graphifi.com/schema/vm/NewConceptSuggestion",
+    "MovingSuggestion": "https://grafsync.graphifi.com/schema/vm/MovingSuggestion",
+    "RemovalSuggestion": "https://grafsync.graphifi.com/schema/vm/RemovalSuggestion",
+    "DeprecationSuggestion": "https://grafsync.graphifi.com/schema/vm/DeprecationSuggestion",
+    "MergeSuggestion": "https://grafsync.graphifi.com/schema/vm/MergeSuggestion",
+    "SplitSuggestion": "https://grafsync.graphifi.com/schema/vm/SplitSuggestion",
+    "TsvTemplate": "https://grafsync.graphifi.com/schema/tsv/TsvTemplate",
+    "publicKey": "https://grafsync.graphifi.com/schema/gs/publicKey",
+    "rdfLangRange": "http://www.w3.org/1999/02/22-rdf-syntax-ns#langRange",
+    "rdfSubject": {
+      "@type": "@id",
+      "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject"
+    },
+    "rdfPredicate": {
+      "@type": "@id",
+      "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate"
+    },
+    "rdfObject": "http://www.w3.org/1999/02/22-rdf-syntax-ns#object",
+    "isSubjectOfStatement": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/isSubjectOfStatement",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "changesOnly": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/changesOnly",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "availableAnnotationProperty": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/availableAnnotationProperty",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "activateWorkflow": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/activateWorkflow",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "activateAnnotate": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/activateAnnotate",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "sortNumerically": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/sortNumerically",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "sortProperty": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/sortProperty",
+      "@type": "@id"
+    },
+    "hiddenProp": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/hiddenProp",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "linkedData": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/linkedData",
+      "@container": "@set"
+    },
+    "iriRemoveSpecialCharacters": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/iriRemoveSpecialCharacters",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "iriRemoveSpaces": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/iriRemoveSpaces",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "iriReplaceSpaces": "https://grafsync.graphifi.com/schema/gs/iriReplaceSpaces",
+    "iriReplaceSpecialCharacters": "https://grafsync.graphifi.com/schema/gs/iriReplaceSpecialCharacters",
+    "minInclusive": {
+      "@id": "http://www.w3.org/2001/XMLSchema#minInclusive"
+    },
+    "maxInclusive": {
+      "@id": "http://www.w3.org/2001/XMLSchema#maxInclusive"
+    },
+    "minExclusive": {
+      "@id": "http://www.w3.org/2001/XMLSchema#minExclusive"
+    },
+    "maxExclusive": {
+      "@id": "http://www.w3.org/2001/XMLSchema#maxExclusive"
+    },
+    "minLength": {
+      "@id": "http://www.w3.org/2001/XMLSchema#minExminLength"
+    },
+    "maxLength": {
+      "@id": "http://www.w3.org/2001/XMLSchema#maxLength"
+    },
+    "length": {
+      "@id": "http://www.w3.org/2001/XMLSchema#length"
+    },
+    "pattern": {
+      "@id": "http://www.w3.org/2001/XMLSchema#pattern"
+    },
+    "minimiseEncoding": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/minimiseEncoding",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "isReport": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/isReport",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "queryProject": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/queryProject",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "isVersion": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/isVersion",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "isValidVersion": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/isValidVersion",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "isVersionOfProject": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/isVersionOfProject",
+      "@type": "@id"
+    },
+    "propertiesInitialLowerCase": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/propertiesInitialLowerCase",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "showIRI": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/showIRI",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "iriAppendLabelWithLanguageCode": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/iriAppendLabelWithLanguageCode",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "iriPrependLabel": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/iriPrependLabel",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "iriHandleIRIclash": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/iriHandleIRIclash",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "iriPrependLabelText": "https://grafsync.graphifi.com/schema/gs/iriPrependLabelText",
+    "query": "https://grafsync.graphifi.com/schema/gs/query",
+    "queryType": "https://grafsync.graphifi.com/schema/gs/queryType",
+    "integrationView": "https://grafsync.graphifi.com/schema/gs/integrationView",
+    "snapshotGraph": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/snapshotGraph",
+      "@type": "@id"
+    },
+    "snapshotComment": "https://grafsync.graphifi.com/schema/gs/snapshotComment",
+    "snapshotId": "https://grafsync.graphifi.com/schema/gs/snapshotId",
+    "snapshotName": "https://grafsync.graphifi.com/schema/gs/snapshotName",
+    "snapshotTime": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/snapshotTime",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "snapshotUser": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/snapshotUser",
+      "@type": "@id"
+    },
+    "snapshotCount": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/snapshotCount",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "snapshotConfiguration": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/snapshotConfiguration",
+      "@type": "@id"
+    },
+    "snapshotPeriod": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/snapshotPeriod",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "maxSnapshotConfigurations": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/maxSnapshotConfigurations",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "maxVersions": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/maxVersions",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "integrationEndpoint": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/integrationEndpoint",
+      "@type": "@id"
+    },
+    "visibility": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/visibility",
+      "@type": "@id"
+    },
+    "invisibility": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/invisibility",
+      "@type": "@id"
+    },
+    "actionTime": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/actionTime",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "actionResource": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/actionResource",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "integration": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/integration",
+      "@type": "@id"
+    },
+    "project": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/project",
+      "@type": "@id"
+    },
+    "projectType": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/projectType",
+      "@type": "@id"
+    },
+    "format": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/format",
+      "@type": "@id"
+    },
+    "subscriber": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/subscriber",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "hasDiscussion": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/hasDiscussion",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "isDiscussionOf": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/isDiscussionOf",
+      "@type": "@id"
+    },
+    "hasDiscussionThread": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/hasDiscussionThread",
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "assigned": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/assigned"
+    },
+    "assignedInRegion": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/assignedInRegion"
+    },
+    "assignmentComplete": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/assignmentComplete"
+    },
+    "knowledgeBase": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/knowledgeBase"
+    },
+    "hasHadTrial": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/hasHadTrial"
+    },
+    "acknowledgeRelease": "https://grafsync.graphifi.com/schema/gs/acknowledgeRelease",
+    "subscriptionName": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/subscriptionName"
+    },
+    "subscriptionType": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/subscriptionType"
+    },
+    "subscriptionVersion": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/subscriptionVersion",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "productID": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/productID",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "tripleCount": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/tripleCount",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "previousTripleCount": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/previousTripleCount",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "updateURL": "https://grafsync.graphifi.com/schema/gs/updateURL",
+    "cancelURL": "https://grafsync.graphifi.com/schema/gs/cancelURL",
+    "subscriptionPackage": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/subscriptionPackage",
+      "@type": "@id"
+    },
+    "subscriptionBucket": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/subscriptionBucket",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "maxUsers": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/maxUsers",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "maxTriples": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/maxTriples",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "maxImportSize": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/maxImportSize",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "maxIntegrations": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/maxIntegrations",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "module": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/module",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "requiresModule": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/requiresModule",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "subscription": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/subscription",
+      "@type": "@id"
+    },
+    "excludeFromImportAssociation": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/excludeFromImportAssociation",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "excludeDeprecated": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/excludeDeprecated",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "assignmentNotification": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/assignmentNotification",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "assignedUser": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/assignedUser",
+      "@type": "@id"
+    },
+    "assignedNote": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/assignedNote",
+      "@container": "@language"
+    },
+    "rejectedNote": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/rejectedNote",
+      "@container": "@language"
+    },
+    "assignedLink": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/assignedLink"
+    },
+    "hasTask": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/hasTask",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "isTaskFor": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/isTaskFor",
+      "@type": "@id"
+    },
+    "invitedUser": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/invitedUser",
+      "@type": "@id"
+    },
+    "invitedUsername": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/invitedUsername"
+    },
+    "latestIRI": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/latestIRI",
+      "@type": "@id"
+    },
+    "iri": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/iri",
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "useSlashIRI": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/useSlashIRI",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "useUuidIRI": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/useUuidIRI",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "inNamedGraph": {
+      "@type": "@id",
+      "@id": "https://grafsync.graphifi.com/schema/gs/inNamedGraph"
+    },
+    "revisionNo": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/revisionNo"
+    },
+    "pendingDeletion": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/pendingDeletion",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "deletionTime": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/deletionTime",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "applicationURL": "https://grafsync.graphifi.com/schema/gs/applicationURL",
+    "applicationThumbnail": "https://grafsync.graphifi.com/schema/gs/applicationThumbnail",
+    "defaultLang": "https://grafsync.graphifi.com/schema/gs/defaultLang",
+    "projectColour": "https://grafsync.graphifi.com/schema/gs/projectColour",
+    "projectLang": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/projectLang",
+      "@container": "@set"
+    },
+    "projectDatatype": {
+      "@type": "@id",
+      "@id": "https://grafsync.graphifi.com/schema/gs/projectDatatype",
+      "@container": "@set"
+    },
+    "hasComponent": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/hasComponent",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "isComponentOf": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/isComponentOf",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "systemAdmin": {
+      "@id": "https://graphifi.com/schema/accesscontrol/systemAdmin",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "superAdmin": {
+      "@id": "https://graphifi.com/schema/accesscontrol/superAdmin",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "username": "https://graphifi.com/schema/accesscontrol/username",
+    "email": "https://graphifi.com/schema/accesscontrol/email",
+    "password": "https://graphifi.com/schema/accesscontrol/password",
+    "user": {
+      "@id": "https://graphifi.com/schema/accesscontrol/user",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "ssoUser": {
+      "@id": "https://graphifi.com/schema/accesscontrol/ssoUser",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "blocked": {
+      "@id": "https://graphifi.com/schema/accesscontrol/blocked",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "isMemberOfGroup": {
+      "@id": "https://graphifi.com/schema/accesscontrol/isMemberOfGroup",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "userGroup": {
+      "@id": "https://graphifi.com/schema/accesscontrol/userGroup",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "hasGroup": {
+      "@id": "https://graphifi.com/schema/accesscontrol/hasGroup",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "isGroupOf": {
+      "@id": "https://graphifi.com/schema/accesscontrol/isGroupOf",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "inSecurityScheme": {
+      "@id": "https://graphifi.com/schema/accesscontrol/inSecurityScheme",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "hasEntitlement": {
+      "@id": "https://graphifi.com/schema/accesscontrol/hasEntitlement",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "entitlement": {
+      "@id": "https://graphifi.com/schema/accesscontrol/entitlement",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "readEntitlement": {
+      "@id": "https://graphifi.com/schema/accesscontrol/readEntitlement",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "createEntitlement": {
+      "@id": "https://graphifi.com/schema/accesscontrol/createEntitlement",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "updateEntitlement": {
+      "@id": "https://graphifi.com/schema/accesscontrol/updateEntitlement",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "targetScope": {
+      "@id": "https://graphifi.com/schema/accesscontrol/targetScope",
+      "@type": "@id"
+    },
+    "isTargetScope": {
+      "@id": "https://graphifi.com/schema/accesscontrol/isTargetScope"
+    },
+    "canUpdate": {
+      "@id": "https://graphifi.com/schema/accesscontrol/canUpdate"
+    },
+    "results": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/searchResults",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "expirationDate": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/expirationDate",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "approved": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/approved",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "deleted": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/deleted",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "isEntailed": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/isEntailed",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "page": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/page",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "pageSize": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/pageSize",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "searchCount": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/searchCount",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "pageCount": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/pageCount",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "invalid": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/invalid",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "normalisation": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/normalisation",
+      "@container": "@set"
+    },
+    "stepCount": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/stepCount",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "status": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/status",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "transfer": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/transfer",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "message": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/message",
+      "@container": "@language"
+    },
+    "resourceCount": "https://grafsync.graphifi.com/schema/gs/resourceCount",
+    "givenName": "http://schema.org/givenName",
+    "familyName": "http://schema.org/familyName",
+    "comment": {
+      "@id": "http://www.w3.org/2000/01/rdf-schema#comment",
+      "@container": "@language"
+    },
+    "seeAlso": {
+      "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso",
+      "@container": "@set"
+    },
+    "label": {
+      "@id": "http://www.w3.org/2000/01/rdf-schema#label",
+      "@container": "@language"
+    },
+    "title": {
+      "@id": "http://purl.org/dc/terms/title",
+      "@container": "@language"
+    },
+    "subject": {
+      "@id": "http://purl.org/dc/terms/subject",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "contributor": {
+      "@id": "http://purl.org/dc/terms/contributor",
+      "@container": "@set"
+    },
+    "created": {
+      "@id": "http://purl.org/dc/terms/created",
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+    },
+    "creator": {
+      "@id": "http://purl.org/dc/terms/creator",
+      "@container": "@set"
+    },
+    "modified": {
+      "@id": "http://purl.org/dc/terms/modified",
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+    },
+    "hasVersion": {
+      "@id": "http://purl.org/dc/terms/hasVersion",
+      "@type": "http://www.w3.org/2001/XMLSchema#int"
+    },
+    "propertyChainAxiom": {
+      "@id": "http://www.w3.org/2002/07/owl#propertyChainAxiom",
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "intersectionOf": {
+      "@id": "http://www.w3.org/2002/07/owl#intersectionOf",
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "oneOf": {
+      "@id": "http://www.w3.org/2002/07/owl#oneOf",
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "complementOf": {
+      "@id": "http://www.w3.org/2002/07/owl#complementOf",
+      "@type": "@id"
+    },
+    "datatypeComplementOf": {
+      "@id": "http://www.w3.org/2002/07/owl#datatypeComplementOf",
+      "@type": "@id"
+    },
+    "unionOf": {
+      "@id": "http://www.w3.org/2002/07/owl#unionOf",
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "inverseOf": {
+      "@id": "http://www.w3.org/2002/07/owl#inverseOf",
+      "@type": "@id"
+    },
+    "differentFrom": {
+      "@id": "http://www.w3.org/2002/07/owl#differentFrom",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "sameAs": {
+      "@id": "http://www.w3.org/2002/07/owl#sameAs",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "cardinality": "http://www.w3.org/2002/07/owl#cardinality",
+    "minCardinality": "http://www.w3.org/2002/07/owl#minCardinality",
+    "maxCardinality": "http://www.w3.org/2002/07/owl#maxCardinality",
+    "qualifiedCardinality": "http://www.w3.org/2002/07/owl#qualifiedCardinality",
+    "minQualifiedCardinality": "http://www.w3.org/2002/07/owl#minQualifiedCardinality",
+    "maxQualifiedCardinality": "http://www.w3.org/2002/07/owl#maxQualifiedCardinality",
+    "deprecated": {
+      "@id": "http://www.w3.org/2002/07/owl#deprecated",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "topDataProperty": {
+      "@id": "http://www.w3.org/2002/07/owl#topDataProperty",
+      "@container": "@set"
+    },
+    "topObjectProperty": {
+      "@id": "http://www.w3.org/2002/07/owl#topObjectProperty",
+      "@container": "@set"
+    },
+    "changedAt": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/changedAt",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "topAnnotationProperty": {
+      "@id": "https://graphifi.com/schema/xowl/topAnnotationProperty",
+      "@container": "@set"
+    },
+    "hasNamedIndividual": {
+      "@id": "https://graphifi.com/schema/xowl/hasNamedIndividual",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "propertyChain": {
+      "@id": "http://www.w3.org/2002/07/owl#propertyChain",
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "versionInfo": {
+      "@id": "http://www.w3.org/2002/07/owl#versionInfo",
+      "@container": "@language"
+    },
+    "disjointWith": {
+      "@id": "http://www.w3.org/2002/07/owl#disjointWith",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "disjointUnionOf": {
+      "@id": "http://www.w3.org/2002/07/owl#disjointUnionOf",
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "propertyDisjointWith": {
+      "@id": "http://www.w3.org/2002/07/owl#propertyDisjointWith",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "onProperty": {
+      "@id": "http://www.w3.org/2002/07/owl#onProperty",
+      "@type": "@id"
+    },
+    "someValuesFrom": {
+      "@id": "http://www.w3.org/2002/07/owl#someValuesFrom",
+      "@type": "@id"
+    },
+    "allValuesFrom": {
+      "@id": "http://www.w3.org/2002/07/owl#allValuesFrom",
+      "@type": "@id"
+    },
+    "onDatatype": {
+      "@id": "http://www.w3.org/2002/07/owl#onDatatype",
+      "@type": "@id"
+    },
+    "withRestrictions": {
+      "@id": "http://www.w3.org/2002/07/owl#withRestrictions",
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "onClass": {
+      "@id": "http://www.w3.org/2002/07/owl#onClass",
+      "@type": "@id"
+    },
+    "onDataRange": {
+      "@id": "http://www.w3.org/2002/07/owl#onDataRange",
+      "@type": "@id"
+    },
+    "hasValue": "http://www.w3.org/2002/07/owl#hasValue",
+    "hasSelf": {
+      "@id": "http://www.w3.org/2002/07/owl#hasSelf",
+      "@type": "http://www.w3.org/2001/XMLSchema#boolean"
+    },
+    "equivalentClass": {
+      "@id": "http://www.w3.org/2002/07/owl#equivalentClass",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "equivalentProperty": {
+      "@id": "http://www.w3.org/2002/07/owl#equivalentProperty",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "defaultClass": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/defaultClass",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "editingMode": "https://grafsync.graphifi.com/schema/gs/editingMode",
+    "editingOption": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/editingOption",
+      "@container": "@set"
+    },
+    "subClassOf": {
+      "@id": "http://www.w3.org/2000/01/rdf-schema#subClassOf",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "subPropertyOf": {
+      "@id": "http://www.w3.org/2000/01/rdf-schema#subPropertyOf",
+      "@type": "@id"
+    },
+    "isDefinedBy": {
+      "@id": "http://www.w3.org/2000/01/rdf-schema#isDefinedBy",
+      "@type": "@id"
+    },
+    "domain": {
+      "@id": "http://www.w3.org/2000/01/rdf-schema#domain",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "range": {
+      "@id": "http://www.w3.org/2000/01/rdf-schema#range",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "inComponent": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/inComponent",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "inComponentProject": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/inComponentProject",
+      "@type": "@id"
+    },
+    "inDataset": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/inDataset",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "treatContentAs": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/treatContentAs"
+    },
+    "shTargetClass": {
+      "@id": "http://www.w3.org/ns/shacl#targetClass",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "targetPredicate": {
+      "@id": "https://grafsync.graphifi.com/schema/gs/targetPredicate",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "shProperty": {
+      "@id": "http://www.w3.org/ns/shacl#property",
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "shPath": {
+      "@id": "http://www.w3.org/ns/shacl#path",
+      "@type": "@id"
+    },
+    "shName": {
+      "@id": "http://www.w3.org/ns/shacl#name",
+      "@container": "@language"
+    },
+    "shDescription": {
+      "@id": "http://www.w3.org/ns/shacl#description",
+      "@container": "@language"
+    },
+    "shPattern": "http://www.w3.org/ns/shacl#pattern",
+    "shMinCount": {
+      "@id": "http://www.w3.org/ns/shacl#minCount",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "shMaxCount": {
+      "@id": "http://www.w3.org/ns/shacl#maxCount",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "shMaxLength": {
+      "@id": "http://www.w3.org/ns/shacl#maxLength",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "Search": "https://grafsync.graphifi.com/schema/gs/Search",
+    "Application": "https://grafsync.graphifi.com/schema/gs/Application",
+    "Component": "https://grafsync.graphifi.com/schema/gs/Component",
+    "Entitlement": "https://graphifi.com/schema/accesscontrol/Entitlement",
+    "SecurityScheme": "https://graphifi.com/schema/accesscontrol/SecurityScheme",
+    "Project": "https://grafsync.graphifi.com/schema/gs/Project",
+    "User": "https://graphifi.com/schema/accesscontrol/User",
+    "UserGroup": "https://graphifi.com/schema/accesscontrol/UserGroup",
+    "Resource": "https://grafsync.graphifi.com/schema/gs/Resource",
+    "Dataset": "https://grafsync.graphifi.com/schema/gs/Dataset",
+    "DataProject": "https://grafsync.graphifi.com/schema/gs/DataProject",
+    "DatatypeConstraint": "https://graphifi.com/schema/xowl/DatatypeConstraint",
+    "Discussion": "https://grafsync.graphifi.com/schema/gs/Discussion",
+    "DiscussionItem": "https://grafsync.graphifi.com/schema/gs/DiscussionItem",
+    "Invitation": "https://grafsync.graphifi.com/schema/gs/Invitation",
+    "SavedQuery": "https://grafsync.graphifi.com/schema/gs/SavedQuery",
+    "SnapshotConfiguration": "https://grafsync.graphifi.com/schema/gs/SnapshotConfiguration",
+    "Integration": "https://grafsync.graphifi.com/schema/gs/Integration",
+    "IntegrationAction": "https://grafsync.graphifi.com/schema/gs/IntegrationAction",
+    "InverseObjectProperty": "https://graphifi.com/schema/xowl/InverseObjectProperty",
+    "Subscription": "https://grafsync.graphifi.com/schema/gs/Subscription",
+    "Task": "https://grafsync.graphifi.com/schema/gs/Task",
+    "NamedIndividual": "http://www.w3.org/2002/07/owl#NamedIndividual",
+    "RdfsClass": "http://www.w3.org/2000/01/rdf-schema#Class",
+    "RdfsDatatype": "http://www.w3.org/2000/01/rdf-schema#Datatype",
+    "OwlClass": "http://www.w3.org/2002/07/owl#Class",
+    "DatatypeProperty": "http://www.w3.org/2002/07/owl#DatatypeProperty",
+    "ObjectProperty": "http://www.w3.org/2002/07/owl#ObjectProperty",
+    "AnnotationProperty": "http://www.w3.org/2002/07/owl#AnnotationProperty",
+    "AsymmetricProperty": "http://www.w3.org/2002/07/owl#AsymmetricProperty",
+    "SymmetricProperty": "http://www.w3.org/2002/07/owl#SymmetricProperty",
+    "TransitiveProperty": "http://www.w3.org/2002/07/owl#TransitiveProperty",
+    "FunctionalProperty": "http://www.w3.org/2002/07/owl#FunctionalProperty",
+    "InverseFunctionalProperty": "http://www.w3.org/2002/07/owl#InverseFunctionalProperty",
+    "ReflexiveProperty": "http://www.w3.org/2002/07/owl#ReflexiveProperty",
+    "IrreflexiveProperty": "http://www.w3.org/2002/07/owl#IrreflexiveProperty",
+    "Restriction": "http://www.w3.org/2002/07/owl#Restriction",
+    "NodeShape": "http://www.w3.org/ns/shacl#NodeShape",
+    "PropertyShape": "http://www.w3.org/ns/shacl#PropertyShape",
+    "Statement": "http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement"
+  }
+}
