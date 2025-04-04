@@ -144,26 +144,17 @@ export async function syncData(data) {
     }
 
     //Now that all the concepts are there update the relations
-    let uniquerPairs = {};
     for(let i =0; i < graphData.length; i++) {
         let resource = graphData[i];
-        if(resource.type === typeConcept && toArray(resource["related"]).length > 0) {
-            toArray(resource["related"]).forEach(r => {
-                let idPair = [resource.id, r].sort();
-                let key = idPair[0];
-                if(uniquerPairs[key] === undefined) {
-                    uniquerPairs[key] = [];
-                }
-                uniquerPairs[key] = [...new Set([...uniquerPairs[key], idPair[1]])];
-            })
+        let relatedArray = toArray(resource["related"]);
+        if(resource.type === typeConcept && relatedArray.length > 0) {
+            let contentfulConcept = await getConceptFromContentFul(resource.id);
+            if(contentfulConcept) {
+                await createConceptRelations(resource.id, allLocales, relatedArray);
+            }
         }
     }
-    let keys = Object.keys(uniquerPairs);
-    for(let i =0; i < keys.length; i++) {
-        let conceptId = keys[i];
-        let relatedIds = uniquerPairs[conceptId];
-        await createConceptRelations(conceptId, allLocales, relatedIds);
-    }
+
     //First update concepts list in concept scheme
     await updateConceptsList(graphData);
 
@@ -460,8 +451,8 @@ export async function createConceptScheme(graphologiConceptScheme, locales) {
 }
 
 async function createConceptRelations(conceptId, locales, relatedIds) {
-    let patchPayload = [];
     let contentfulConcept = await getConceptFromContentFul(conceptId);
+
     let contentfulRelatedConcepts = [];
     for(let i=0;i<relatedIds.length;i++) {
         let id = relatedIds[i];
@@ -471,11 +462,25 @@ async function createConceptRelations(conceptId, locales, relatedIds) {
         }
     }
     //TODO optimize for now we remove all old and add all new
-    contentfulConcept['related'].forEach((cid, index) => {
+    //It seems like there is bug in CF so we remove existing connections one by one
+    let currentRelated = toArray(contentfulConcept?.['related']);
+    for(let i=0; i<currentRelated.length; i++) {
+        let patchPayload = [
+            {
+                op: "remove", path: `/related/0`
+            }
+        ]
+        let latestContentfulConcept = await getConceptFromContentFul(contentfulConcept.uri);
+        let endpoint = `https://api.contentful.com/organizations/${organizationId}/taxonomy/concepts/${latestContentfulConcept.sys.id}`;
+        await patchToContentful(endpoint, patchPayload, latestContentfulConcept.sys.version);
+
+    }
+    /*currentRelated.forEach((cid, index) => {
         patchPayload.push({
             op: "remove", path: `/related/${index}`
         })
-    })
+    })*/
+    let patchPayload = [];
     contentfulRelatedConcepts.forEach((rc, index) => {
         return patchPayload.push({
             "op": "add",
@@ -483,12 +488,15 @@ async function createConceptRelations(conceptId, locales, relatedIds) {
             "value": {"sys": {"id": rc.sys.id, "type": "Link"}}
         })
     });
-    let latestContentfulConcept = await getConceptFromContentFul(contentfulConcept.uri);
-    let endpoint = `https://api.contentful.com/organizations/${organizationId}/taxonomy/concepts/${latestContentfulConcept.sys.id}`;
-    let updatedContentfulConcept = await patchToContentful(endpoint, patchPayload, latestContentfulConcept.sys.version);
-    return {
-        conceptInContentful : updatedContentfulConcept
+    if(patchPayload.length >0) {
+        let latestContentfulConcept = await getConceptFromContentFul(contentfulConcept.uri);
+        let endpoint = `https://api.contentful.com/organizations/${organizationId}/taxonomy/concepts/${latestContentfulConcept.sys.id}`;
+        let updatedContentfulConcept = await patchToContentful(endpoint, patchPayload, latestContentfulConcept.sys.version);
+        return {
+            conceptInContentful: updatedContentfulConcept
+        }
     }
+
 }
 
 async function hasChange(existingResource, payload) {

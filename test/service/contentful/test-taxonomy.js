@@ -417,6 +417,8 @@ describe("Contentful integration", () => {
             const c2Id = "https://ex.com/c/2";
             const c3Id = "https://ex.com/c/3";
             const c4Id = "https://ex.com/c/4";
+            const c5Id = "https://ex.com/c/5";
+            const c6Id = "https://ex.com/c/6";
 
             let allConceptSchemes = await getAllConceptSchemes();
             let foundCS = allConceptSchemes.find(cs => cs.uri === cs1Id);
@@ -614,7 +616,7 @@ describe("Contentful integration", () => {
 
             //Now delete top concept 2 and updated c3, c4 related
             conceptScheme['hasTopConcept'] = [concept1.id];
-            concept4['related'] = [c1Id, c3Id]
+            concept4['related'] = [c1Id]
             data = {
                 "graph": [conceptScheme, concept1, concept3, concept4]
             }
@@ -639,8 +641,7 @@ describe("Contentful integration", () => {
             expect(broaderIdsInC3).to.include(foundC1.sys.id);
             expect(broaderIdsInC3.length).to.be.eql(1);
             relatedIdsInC3 = toArray(foundC3["related"]).map(c => c.sys.id);
-            expect(relatedIdsInC3).to.include(foundC4.sys.id);
-            expect(relatedIdsInC3.length).to.be.eql(1);
+            expect(relatedIdsInC3.length).to.be.eql(0);
 
             expect(foundC4["prefLabel"]["en-US"]).to.be.eql("Concept 4");
             broaderIdsInC4 = toArray(foundC4["broader"]).map(c => c.sys.id);
@@ -648,8 +649,7 @@ describe("Contentful integration", () => {
             expect(broaderIdsInC4.length).to.be.eql(1);
             relatedIdsInC4 = toArray(foundC4["related"]).map(c => c.sys.id);
             expect(relatedIdsInC4).to.include(foundC1.sys.id);
-            expect(relatedIdsInC4).to.include(foundC3.sys.id);
-            expect(relatedIdsInC4.length).to.be.eql(2);
+            expect(relatedIdsInC4.length).to.be.eql(1);
 
             conceptIdsInCS = toArray(foundCS["concepts"]).map(c => c.sys.id);
             expect(conceptIdsInCS).to.include(foundC1.sys.id);
@@ -661,6 +661,61 @@ describe("Contentful integration", () => {
             expect(topConceptIdsInCS).to.include(foundC1.sys.id);
             expect(topConceptIdsInCS.length).to.be.eql(1);
 
+            //Now add two more concept in hierarchy and create related
+            let concept5 = {
+                "id" : c5Id,
+                "type" : "Concept",
+                "prefLabel": {
+                    "en-us": "Concept 5"
+                },
+                "narrower" : c6Id,
+                'inScheme' : conceptScheme.id
+            }
+            let concept6 = {
+                "id" : c6Id,
+                "type" : "Concept",
+                "prefLabel": {
+                    "en-us": "Concept 6"
+                },
+                "broader" : [c5Id],
+                'inScheme' : conceptScheme.id,
+                'related' : [c1Id, c4Id]
+            }
+            conceptScheme['hasTopConcept'] = [concept1.id, concept5.id];
+            data = {
+                "graph": [conceptScheme, concept1, concept3, concept4, concept5, concept6]
+            }
+            await syncData(data);
+
+            allConceptSchemes = await getAllConceptSchemes();
+            foundCS = allConceptSchemes.find(cs => cs.uri === conceptScheme.id);
+            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1");
+
+            allConcepts = await getAllConcepts(foundCS.sys.id);
+            foundC1 = allConcepts.find(cs => cs.uri === concept1.id);
+            foundC3 = allConcepts.find(cs => cs.uri === concept3.id);
+            foundC4 = allConcepts.find(cs => cs.uri === concept4.id);
+
+            let foundC5 = allConcepts.find(cs => cs.uri === concept5.id);
+            let foundC6 = allConcepts.find(cs => cs.uri === concept6.id);
+
+            let relatedIdsInC6 = toArray(foundC6["related"]).map(c => c.sys.id);
+            expect(relatedIdsInC6).to.include(foundC1.sys.id);
+            expect(relatedIdsInC6).to.include(foundC4.sys.id);
+            expect(relatedIdsInC6.length).to.be.eql(2);
+
+            conceptIdsInCS = toArray(foundCS["concepts"]).map(c => c.sys.id);
+            expect(conceptIdsInCS).to.include(foundC1.sys.id);
+            expect(conceptIdsInCS).to.include(foundC3.sys.id);
+            expect(conceptIdsInCS).to.include(foundC4.sys.id);
+            expect(conceptIdsInCS).to.include(foundC5.sys.id);
+            expect(conceptIdsInCS).to.include(foundC6.sys.id);
+            expect(conceptIdsInCS.length).to.be.eql(5);
+
+            topConceptIdsInCS = toArray(foundCS["topConcepts"]).map(c => c.sys.id);
+            expect(topConceptIdsInCS).to.include(foundC1.sys.id);
+            expect(topConceptIdsInCS).to.include(foundC5.sys.id);
+            expect(topConceptIdsInCS.length).to.be.eql(2);
 
         })
     })
