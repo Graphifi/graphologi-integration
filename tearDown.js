@@ -15,4 +15,4 @@ export async function clearAllData() {
     }
 }
 
-clearAllData().then(r => console.log("All data cleared"));
+clearAllData().then(() => console.log("All data cleared"));

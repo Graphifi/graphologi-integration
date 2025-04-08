@@ -118,7 +118,7 @@ describe("Contentful integration", () => {
         it('should sync large taxonomy', async () => {
             let taxonomy = createTaxonomy({depth: 2, conceptCount:2, baseIRI: "http://ex.com/1"});
             let data = {graph : taxonomy};
-            let errors = await syncData(data);
+            await syncData(data);
 
             let conceptCount = 10;
             taxonomy = createTaxonomy({depth: 1, conceptCount: conceptCount, baseIRI: "http://ex.com/1"});
