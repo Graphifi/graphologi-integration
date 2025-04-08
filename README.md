@@ -6,6 +6,7 @@
 ```
 PORT=8080
 ENVIRONMENT_FILE=.env
+LOG_DIRECTORY="./logs/"
 LOG_CONSOLE=
 
 #This is the public key which you can copy from Graphologi and paste
