@@ -52,8 +52,8 @@
         "https://example.com/test1/TopConcept2"
       ],
       "notation": [
-        "Top Concept 1 notation 2",
-        "Top Concept 1 notation 1"
+        "Top Concept 1 notation 2 https://example.com/test1/TopConcept1",
+        "Top Concept 1 notation 1 https://example.com/test1/TopConcept1"
       ],
       "topConceptOf": [
         "https://example.com/test1"
@@ -67,7 +67,6 @@
       "revisionNo": 5,
       "example": {
         "en-us": [
-          "Top Concept 1 Example 2",
           "Top Concept 1 Example 1"
         ]
       },
@@ -140,8 +139,7 @@
       "id": "https://example.com/test1/TopConcept1Child1Child11",
       "editorialNote": {
         "en-us": [
-          "Top Concept 1 Child 1 Child 1 Editorial Note 1",
-          "Top Concept 1 Child 1 Child 1 Editorial Note 2"
+          "Top Concept 1 Child 1 Child 1 Editorial Note 1"
         ]
       },
       "hiddenLabel": {
@@ -157,7 +155,6 @@
       "revisionNo": 2,
       "scopeNote": {
         "en-us": [
-          "Top Concept 1 Child 1 Child 1 Scope Note 2",
           "Top Concept 1 Child 1 Child 1 Scope Note 1"
         ]
       },
@@ -176,14 +173,12 @@
       ],
       "historyNote": {
         "en-us": [
-          "Top Concept 1 Child 1 Child 1 History Note 1",
-          "Top Concept 1 Child 1 Child 1 History Note 2"
+          "Top Concept 1 Child 1 Child 1 History Note 1"
         ]
       },
       "changeNote": {
         "en-us": [
-          "Top Concept 1 Child 1 Child 1 Change Note 1",
-          "Top Concept 1 Child 1 Child 1 Change Note 2"
+          "Top Concept 1 Child 1 Child 1 Change Note 1"
         ]
       },
       "type": "Concept",
@@ -192,14 +187,11 @@
       },
       "example": {
         "en-us": [
-          "Top Concept 1 Child 1 Child 1 Example 2",
           "Top Concept 1 Child 1 Child 1 Example 1"
         ]
       },
       "related": [
         "https://example.com/test1/TopConcept2Child2",
-        "https://example.com/test1/TopConcept2Child1",
-        "https://example.com/test1/TopConcept2",
         "https://example.com/test1/TopConcept1"
       ],
       "created": "2025-03-31T21:14:59.103Z"
@@ -230,8 +222,7 @@
         "https://example.com/test2"
       ],
       "related": [
-        "https://example.com/test1/TopConcept1",
-        "https://example.com/test1/TopConcept1Child1Child11"
+        "https://example.com/test1/TopConcept1"
       ],
       "narrower": [
         "https://example.com/test1/TopConcept2Child1",
@@ -275,21 +266,19 @@
       "id": "https://example.com/test1/TopConcept1Child1",
       "scopeNote": {
         "en-us": [
-          "Top Concept 1 Child 1 Scope Note 2",
           "Top Concept 1 Child 1 Scope Note 1"
         ]
       },
       "notation": [
-        "Top Concept 1 Child 1 Notation 1",
-        "Top Concept 1 Child 1 Notation 2"
+        "Top Concept 1 Child 1 Notation 1 https://example.com/test1/TopConcept1Child1",
+        "Top Concept 1 Child 1 Notation 2 https://example.com/test1/TopConcept1Child1"
       ],
       "prefLabel": {
         "en-us": "Top Concept 1 Child 1"
       },
       "changeNote": {
         "en-us": [
-          "Top Concept 1 Child 1 Change Note 1",
-          "Top Concept 1 Child 1 Change Note 2"
+          "Top Concept 1 Child 1 Change Note 1"
         ]
       },
       "broader": [
@@ -310,21 +299,18 @@
       },
       "example": {
         "en-us": [
-          "Top Concept 1 Child 1 Example 2",
           "Top Concept 1 Child 1 Example 1"
         ]
       },
       "type": "Concept",
       "historyNote": {
         "en-us": [
-          "Top Concept 1 Child 1 History Note 2",
           "Top Concept 1 Child 1 History Note 1"
         ]
       },
       "editorialNote": {
         "en-us": [
-          "Top Concept 1 Child 1 Editorial Note 1",
-          "Top Concept 1 Child 1 Editorial Note 2"
+          "Top Concept 1 Child 1 Editorial Note 1"
         ]
       },
       "created": "2025-03-31T21:14:51.516Z",
@@ -365,7 +351,6 @@
       "id": "https://example.com/test1/TopConcept2Child1",
       "created": "2025-03-31T21:15:07.765Z",
       "related": [
-        "https://example.com/test1/TopConcept1Child1Child11",
         "https://example.com/test1/TopConcept1Child1"
       ],
       "broader": [

@@ -14,6 +14,9 @@ logInfo('Starting with ENVIRONMENT_FILE : ' + process.env.ENVIRONMENT_FILE);
 
 let expressApp = express();
 
+expressApp.disable('x-powered-by');
+expressApp.set("etag", false);
+
 expressApp.use(express.json( { type :['application/json','application/ld+json'], limit: '50mb'}));
 expressApp.use(express.urlencoded({limit: '50mb'}));
 

@@ -10,7 +10,9 @@ function keyNameIsInValid(keyName, pair) {
 }
 
 export function authenticate(req, res, next) {
-
+    if(process.env.DISABLE_AUTHENTICATION === "true") {
+        return next();
+    }
     let payload = req.body;
 
     /*

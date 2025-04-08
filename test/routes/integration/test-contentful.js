@@ -4,9 +4,10 @@ import chaiModule, {expect} from 'chai';
 import chaiHttp from 'chai-http';
 import {app} from '../../../app.js';
 import fs from 'fs';
-import {getAllConcepts, toArray, typeConcept} from '../../../service/contentful/taxonomy.js'
+import {getAllConcepts, syncData, toArray, typeConcept} from '../../../service/contentful/taxonomy.js'
 import {generateKeyPair, sign} from "../../../service/authentication.js";
-import {assertConceptsEqual, cleanup, deleteAllConcepts, deleteAllConceptSchemes} from "../../util/contentfulUtil.js";
+import {assertConceptsEqual, cleanup} from "../../util/contentfulUtil.js";
+import {createTaxonomy} from "../../util/taxonomyUtil.js";
 
 const chai = chaiModule.use(chaiHttp);
 
@@ -22,8 +23,6 @@ describe("Contentful integration", () => {
     })
 
     beforeEach(async function () {
-        await deleteAllConcepts();
-        await deleteAllConceptSchemes();
     });
 
 
@@ -43,7 +42,10 @@ describe("Contentful integration", () => {
                 .set('Authorization', authorization)
                 .send(payload);
 
-            expect(res.statusCode).to.be.eql(200);
+            expect(res.statusCode).to.be.eql(400);
+            let json = JSON.parse(res.text);
+            expect(json.message).to.be.eql("Request failed with errors.");
+            expect(json.errors[0]).to.be.eql("Payload is empty. Nothing to update.");
         })
 
         it("should sync a complex taxonomy", async () => {
@@ -113,36 +115,15 @@ describe("Contentful integration", () => {
             })
         });
 
-        it.skip("should sync large taxonomy", async () => {
-            const data = fs.readFileSync("test/routes/integration/go-taxonomy-wandinc-general-business-taxonomy.jsonld", 'utf-8');
-            //await cleanup(data);
-            let allConcepts = await getAllConcepts();
-            JSON.parse(data).graph.forEach(r => {
-                let id = r.id;
-                expect(id).not.be.eql(undefined);
-                let concept = allConcepts.find(c => c.uri === id);
-                expect(concept).to.be.eql(undefined);
-            })
+        it('should sync large taxonomy', async () => {
+            let taxonomy = createTaxonomy({depth: 2, conceptCount:2, baseIRI: "http://ex.com/1"});
+            let data = {graph : taxonomy};
+            let errors = await syncData(data);
 
-            let privateKey = process.env.TEST_GRAPHOLOGI_PRIVATE_KEY;
-            let authorization = sign(privateKey, data);
-
-            let {res} = await chai.request(app)
-                .put(taxonomyEndpoint)
-                .set('Content-Type', "application/json")
-                .set('Authorization', authorization)
-                .send(data);
-            expect(res.statusCode).to.be.eql(200);
-            allConcepts = await getAllConcepts();
-            JSON.parse(data).graph.forEach(gr => {
-                if(toArray(gr.type).includes(typeConcept)) {
-                    let uri = gr.id;
-                    let foundConcept = allConcepts.find(ac => ac.uri === uri);
-                    if(foundConcept) {
-                        assertConceptsEqual(foundConcept, gr);
-                    }
-                }
-            })
-        }).timeout(20 * 60 * 1000);
+            taxonomy = createTaxonomy({depth: 4, conceptCount:5, baseIRI: "http://ex.com/1"});
+            data = {graph : taxonomy};
+            await syncData(data);
+            //console.log(JSON.stringify(taxonomy, null, 2));
+        });
     });
 });

@@ -25,8 +25,7 @@
       ],
       "example": {
         "en-us": [
-          "Top Concept 1 Example 2",
-          "Top Concept 1 Example 1"
+          "Top Concept 1 Example 2"
         ]
       },
       "hiddenLabel": {
@@ -124,20 +123,17 @@
       ],
       "scopeNote": {
         "en-us": [
-          "Top Concept 1 Child 1 Scope Note 2",
           "Top Concept 1 Child 1 Scope Note 1"
         ]
       },
       "revisionNo": 19,
       "example": {
         "en-us": [
-          "Top Concept 1 Child 1 Example 2",
           "Top Concept 1 Child 1 Example 1"
         ]
       },
       "historyNote": {
         "en-us": [
-          "Top Concept 1 Child 1 History Note 2",
           "Top Concept 1 Child 1 History Note 1"
         ]
       },
@@ -154,8 +150,7 @@
       ],
       "editorialNote": {
         "en-us": [
-          "Top Concept 1 Child 1 Editorial Note 1",
-          "Top Concept 1 Child 1 Editorial Note 2"
+          "Top Concept 1 Child 1 Editorial Note 1"
         ]
       },
       "narrower": [
@@ -163,7 +158,6 @@
       ],
       "changeNote": {
         "en-us": [
-          "Top Concept 1 Child 1 Change Note 2",
           "Top Concept 1 Child 1 Change Note 1"
         ]
       },
@@ -241,8 +235,7 @@
       ],
       "editorialNote": {
         "en-us": [
-          "Top Concept 1 Child 1 Child 1 Editorial Note 1",
-          "Top Concept 1 Child 1 Child 1 Editorial Note 2"
+          "Top Concept 1 Child 1 Child 1 Editorial Note 1"
         ]
       },
       "hiddenLabel": {
@@ -259,13 +252,11 @@
       },
       "historyNote": {
         "en-us": [
-          "Top Concept 1 Child 1 Child 1 History Note 2",
           "Top Concept 1 Child 1 Child 1 History Note 1"
         ]
       },
       "example": {
         "en-us": [
-          "Top Concept 1 Child 1 Child 1 Example 2",
           "Top Concept 1 Child 1 Child 1 Example 1"
         ]
       },
@@ -280,15 +271,13 @@
       ],
       "changeNote": {
         "en-us": [
-          "Top Concept 1 Child 1 Child 1 Change Note 1",
-          "Top Concept 1 Child 1 Child 1 Change Note 2"
+          "Top Concept 1 Child 1 Child 1 Change Note 1"
         ]
       },
       "modified": "2025-04-01T18:00:50.42Z",
       "created": "2025-03-31T21:14:59.103Z",
       "scopeNote": {
         "en-us": [
-          "Top Concept 1 Child 1 Child 1 Scope Note 2",
           "Top Concept 1 Child 1 Child 1 Scope Note 1"
         ]
       },

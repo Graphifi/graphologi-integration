@@ -6,6 +6,7 @@ import {
     toArray
 } from "../../service/contentful/taxonomy.js";
 import {expect} from "chai";
+import {logInfo} from "../../service/loggingUtil.js";
 
 export async function deleteConcept(concept) {
     let endpoint = `https://api.contentful.com/organizations/${organizationId}/taxonomy/concepts/${concept.sys.id}`;
@@ -19,14 +20,15 @@ export async function deleteConcept(concept) {
     if (res.status !== 204) {
         console.log("Delete failed", res.status, res.json())
     }
+
 }
 
-export async function deleteConceptScheme(cs) {
-    let endpoint = `https://api.contentful.com/organizations/${organizationId}/taxonomy/concept-schemes/${cs.sys.id}`;
-    console.log("deleteConceptScheme ", endpoint);
+export async function deleteConceptScheme(csInCF) {
+    let endpoint = `https://api.contentful.com/organizations/${organizationId}/taxonomy/concept-schemes/${csInCF.sys.id}`;
+    logInfo("deleteConceptScheme : "+ endpoint);
     const res = await fetch(endpoint, {
         method: 'DELETE',
-        headers: {"Authorization": `Bearer ${accessToken}`, "x-contentful-version": cs.sys.version},
+        headers: {"Authorization": `Bearer ${accessToken}`, "x-contentful-version": csInCF.sys.version},
     }).catch(err => {
         console.log("Delete failed", err)
     });
@@ -35,17 +37,12 @@ export async function deleteConceptScheme(cs) {
     }
 }
 
-export async function deleteAllConceptSchemes() {
-    let concepts = await getAllConceptSchemes();
-    for(let i=0;i<concepts.length;i++) {
-        let cs = concepts[i];
-        await deleteConceptScheme(cs);
-    }
-}
-
 export async function deleteAllConcepts(ids) {
-    let concepts = await getAllConcepts();
     let idsArray = toArray(ids);
+    if(idsArray.length === 0) {
+        return;
+    }
+    let concepts = await getAllConcepts();
     for(let i=0;i<concepts.length;i++) {
         let concept = concepts[i];
         if(idsArray.length > 0 && !idsArray.includes(concept.uri)) {

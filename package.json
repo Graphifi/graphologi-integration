@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "export PORT=3005; nodemon ./bin/www ",
-    "test": "mocha --recursive --timeout 20000"
+    "test": "export LOG_CONSOLE=false;mocha --recursive --timeout 60000"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.39.0",

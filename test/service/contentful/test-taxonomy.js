@@ -1,13 +1,17 @@
 import '@dotenvx/dotenvx/config';
 import {
-    copyDataPropertyValue, createConcept, createConceptScheme, getAllConcepts, getAllConceptSchemes,
-    listsEqual, syncData, toArray, typeConcept, typeConceptScheme
+    copyDataPropertyValue,
+    listsEqual,
+    typeConcept,
+    typeConceptScheme,
+    validateConceptSchemeCounts,
+    validateResources
 } from '../../../service/contentful/taxonomy.js'
 import {expect} from "chai";
 import {generateKeyPair} from "../../../service/authentication.js";
-import {cleanup, deleteAllConcepts, deleteConceptScheme} from "../../util/contentfulUtil.js";
+import {createString, createTestConcept} from "../../util/taxonomyUtil.js";
 
-describe("Contentful integration", () => {
+describe("Contentful taxonomy service", () => {
 
     before(async function () {
         let keyPair = generateKeyPair();
@@ -16,8 +20,6 @@ describe("Contentful integration", () => {
     })
 
     beforeEach(async function () {
-        //await deleteAllConcepts();
-        //await deleteAllConceptSchemes();
     });
 
     describe(" list equal", () => {
@@ -62,6 +64,273 @@ describe("Contentful integration", () => {
         });
     })
 
+    describe("test validateConceptSchemeCounts", () => {
+        let context = {
+            'beforeUpdate': {
+                'conceptSchemes': []
+            },
+            'locales': [{"code": "en"}, {"code": "en-US"}],
+            'defaultLocaleCode': "en-US",
+        }
+
+        it('concept scheme limit happy path', async () => {
+            let data = []
+            for(let i = 0; i < 10; i++) {
+                context['beforeUpdate']['conceptSchemes'].push({uri : "a"+i.toString()})
+            }
+            for(let i = 0; i < 10; i++) {
+                data.push({id: "b"+i.toString(), type: typeConceptScheme})
+            }
+            let errorsCollector = []
+            await validateConceptSchemeCounts(data, context, errorsCollector);
+            expect(errorsCollector.length).to.be.eql(0);
+
+        })
+
+        it('concept scheme limit when payload concept schemes more than limit', async () => {
+            let data = [];
+            for (let i = 0; i < 21; i++) {
+                data.push({id: "b"+i.toString(), type: typeConceptScheme})
+            }
+            let errorsCollector = []
+            await validateConceptSchemeCounts(data, context, errorsCollector);
+            expect(errorsCollector.length).to.be.eql(2);
+            expect(errorsCollector[0]).to.be.eql(`Maximum 20 concept scheme allowed in Contentful. Payload contains 21.`);
+            expect(errorsCollector[1]).to.be.eql(`Maximum ${20} concept scheme allowed in Contentful. Payload adds ${21} new concept schemes but there are already ${10} concept schemes in Contentful.`);
+        })
+
+        it('concept scheme limit when payload plus existing concept schemes more than limit', async () => {
+            let data = [];
+            for(let i = 0; i < 11; i++) {
+                data.push({id: "b"+i.toString(), type: typeConceptScheme})
+            }
+            let errorsCollector = []
+            await validateConceptSchemeCounts(data, context, errorsCollector);
+            expect(errorsCollector.length).to.be.eql(1);
+            expect(errorsCollector[0]).to.be.eql(`Maximum ${20} concept scheme allowed in Contentful. Payload adds ${11} new concept schemes but there are already ${10} concept schemes in Contentful.`);
+        })
+    })
+
+    describe("test validateResources", () => {
+        let context = {
+            'beforeUpdate' : {
+                'conceptSchemes': []
+            },
+            'locales' : [{"code": "en"}, {"code": "en-US"}],
+            'defaultLocaleCode' : "en-US",
+        }
+
+        it('concept schemes resource properties happy path', async () => {
+            let data = []
+            let uri="";
+            for (let i = 0; i < 500; i++) {
+                uri = uri +"1";
+            }
+            data.push({
+                id: uri,
+                type: typeConceptScheme,
+                title: {
+                    "en-US": "Test 1"
+                },
+                description : {
+                    "en-US": "Test description"
+                }
+            })
+
+            let errorsCollector = []
+            await validateResources(data, context, errorsCollector);
+            expect(errorsCollector.length).to.be.eql(0);
+        })
+
+        it('concept schemes resource with extra properties', async () => {
+            let data = []
+            let uri="http://example.com/test1";
+            data.push({
+                id: uri,
+                type: typeConceptScheme,
+                title: {
+                    "en-US": "Test 1"
+                },
+                description : {
+                    "en-US": "Test description"
+                },
+                //Below properties are not for concept scheme in Contentful
+                "prefLabel": {
+                    "en-us": "PrefLabel value"
+                },
+                "modified": "2025-03-31T21:19:40.742Z",
+                "useUuidIRI": true,
+                "useXL": false,
+                "minimiseEncoding": true,
+                "revisionNo": 4
+            })
+
+            let errorsCollector = []
+            await validateResources(data, context, errorsCollector);
+            expect(errorsCollector.length).to.be.eql(0);
+        })
+
+        it('concept resource properties happy path', async () => {
+            let data = []
+            let uri= createString(500);
+
+            let testConcept = createTestConcept(uri, "Pref Label", "Alt Label", "http;//ex.com", ["http://b.com"], ["http://nb.com"], ["http://r.com"], ["notation1"], "Example value", "Hidden label", "Editorial note", "Scope note", "History note", "Change note");
+            data.push(testConcept)
+
+            let errorsCollector = []
+            await validateResources(data, context, errorsCollector);
+            expect(errorsCollector.length).to.be.eql(0);
+        })
+
+        it('concept resource prefLabel is required', async () => {
+            let data = []
+            data.push({id : "a", type: typeConcept})
+
+            let errorsCollector = []
+            await validateResources(data, context, errorsCollector);
+            expect(errorsCollector.length).to.be.eql(1);
+            expect(errorsCollector[0]).to.be.eql("'prefLabel' is missing for concept with uri 'a' in locale en-US.");
+        })
+
+        it('concept resource prefLabel length', async () => {
+            let data = []
+            data.push({id : "a", type: typeConcept, 'prefLabel': {'en-US': createString(257)}})
+
+            let errorsCollector = []
+            await validateResources(data, context, errorsCollector);
+            expect(errorsCollector.length).to.be.eql(1);
+            expect(errorsCollector[0]).to.be.eql("'prefLabel' for concept 'a' in locale en-US is too long. Max length is 256.");
+
+            data= [{id : "a", type: typeConcept, 'prefLabel': {'en-US': createString(256)}}]
+
+            errorsCollector = []
+            await validateResources(data, context, errorsCollector);
+            expect(errorsCollector.length).to.be.eql(0);
+        })
+
+        it('concept resource altLabel, hiddenLabel and notation length', async () => {
+            let data = []
+            let altLabel = createString(257);
+            let hiddenLabel = { "en-us": createString(257)};
+            let notation1 = createString(257);
+            data.push(createTestConcept("a", createString(256), altLabel, "http;//ex.com", ["http://b.com"], ["http://nb.com"], ["http://r.com"], [notation1], "Example value", hiddenLabel, "Editorial note", "Scope note", "History note", "Change note"))
+
+            let errorsCollector = []
+            await validateResources(data, context, errorsCollector);
+            expect(errorsCollector.length).to.be.eql(3);
+            expect(errorsCollector[0]).to.be.eql(`'altLabels' value '${altLabel}' for concept with uri 'a' is too long. Max length is 256.`);
+            expect(errorsCollector[1]).to.be.eql(`'hiddenLabels' value '${hiddenLabel["en-us"]}' for concept with uri 'a' is too long. Max length is 256.`);
+            expect(errorsCollector[2]).to.be.eql(`'notations' value '${notation1}' for concept with uri 'a' is too long. Max length is 256.`);
+
+            data= [createTestConcept("a", createString(256), createString(256), "http;//ex.com", ["http://b.com"], ["http://nb.com"], ["http://r.com"], [createString(256)], "Example value", createString(256), "Editorial note", "Scope note", "History note", "Change note")]
+
+            errorsCollector = []
+            await validateResources(data, context, errorsCollector);
+            expect(errorsCollector.length).to.be.eql(0);
+        })
+
+        it('concept resource one value for example and note properties when invalid', async () => {
+            let data = [];
+            let errorsCollector = [];
+            let example = {
+                "en-us": ["Top Concept 1 Example", "Top Concept 1 Example 2"]
+            }
+            let editorialNote = {
+                "en-us": ["Top Concept 1 Editorial Note 1", "Top Concept 1 Editorial Note 2"]
+            }
+            let scopeNote = {
+                "en-us": [  "Top Concept 1 Scope Note 1", "Top Concept 1 Scope Note 2"]
+            }
+            let historyNote = {
+                "en-us": ["Top Concept 1 History Note 1",  "Top Concept 1 History Note 2"]
+            }
+            let changeNote = {
+                "en-us": ["Top Concept 1 Change Note 1", "Top Concept 1 Change Note 2"]
+            }
+            let testConcept = createTestConcept("a", createString(10), createString(10), "http;//ex.com", ["http://b.com"], ["http://nb.com"], ["http://r.com"], [createString(10)], example, createString(10), editorialNote, scopeNote, historyNote, changeNote);
+            data.push(testConcept)
+            await validateResources(data, context, errorsCollector);
+            expect(errorsCollector.length).to.be.eql(5);
+            expect(errorsCollector[0]).to.be.eql(`To many 'note' for concept with uri 'a' only 1 value allowed.`);
+            expect(errorsCollector[1]).to.be.eql(`To many 'editorialNote' for concept with uri 'a' only 1 value allowed.`);
+            expect(errorsCollector[2]).to.be.eql(`To many 'example' for concept with uri 'a' only 1 value allowed.`);
+            expect(errorsCollector[3]).to.be.eql(`To many 'historyNote' for concept with uri 'a' only 1 value allowed.`);
+            expect(errorsCollector[4]).to.be.eql(`To many 'scopeNote' for concept with uri 'a' only 1 value allowed.`);
+        });
+
+        it('concept resource one value for example and note properties when valid', async () => {
+            let data = [];
+            let errorsCollector = [];
+            let example = {
+                "en-us": "Top Concept 1 Example"
+            }
+            let editorialNote = {
+                "en-us": "Top Concept 1 Editorial Note 1"
+            }
+            let scopeNote = {
+                "en-us": "Top Concept 1 Scope Note 1"
+            }
+            let historyNote = {
+                "en-us": "Top Concept 1 History Note 1"
+            }
+            let changeNote = {
+                "en-us": "Top Concept 1 Change Note 1"
+            }
+            let testConcept = createTestConcept("a", createString(10), createString(10), "http;//ex.com", ["http://b.com"], ["http://nb.com"], ["http://r.com"], [createString(10)], example, createString(10), editorialNote, scopeNote, historyNote, changeNote);
+            data.push(testConcept)
+            await validateResources(data, context, errorsCollector);
+            expect(errorsCollector.length).to.be.eql(0);
+        });
+
+        it('concept notation is unique within payload ', async () => {
+
+            let data = [];
+            let errorsCollector = [];
+
+            let testConcept1 = createTestConcept("a", "Label");
+            testConcept1.notation.push("notation1");
+
+            let testConcept2 = createTestConcept("b", "Label");
+            testConcept2.notation.push("notation2");
+            testConcept2.notation.push("notation1");
+
+            data.push(testConcept1);
+            data.push(testConcept2);
+
+            await validateResources(data, context, errorsCollector);
+
+            expect(errorsCollector.length).to.be.eql(2);
+            expect(errorsCollector[0]).to.be.eql(`Notation value 'notation1' for concept with uri 'a' is already used in concept with uri 'b'.`);
+            expect(errorsCollector[1]).to.be.eql(`Notation value 'notation1' for concept with uri 'b' is already used in concept with uri 'a'.`);
+
+        });
+
+        it('concept notation is unique in payload and other concepts in CF', async () => {
+            let data = [];
+            let errorsCollector = [];
+            let context = {
+                'beforeUpdate' : {
+                    'conceptSchemes': [],
+                    'concepts': [
+                        {uri : 'x', 'notations': ['notation1']},
+                    ]
+                },
+                'locales' : [{"code": "en"}, {"code": "en-US"}],
+                'defaultLocaleCode' : "en-US",
+            }
+            let testConcept1 = createTestConcept("a", "Label");
+            testConcept1.notation.push("notation1");
+
+            data.push(testConcept1);
+
+            await validateResources(data, context, errorsCollector);
+
+            expect(errorsCollector.length).to.be.eql(1);
+            expect(errorsCollector[0]).to.be.eql(`Notation value 'notation1' for concept with uri 'a' is already used in concept with uri 'x'.`);
+
+        })
+    })
+
     describe("copyDataPropertyValue", () => {
         it('should copy concept properties', async () => {
             let locales = [{"code": "en"}, {"code": "en-US"}];
@@ -96,8 +365,7 @@ describe("Contentful integration", () => {
                 ],
                 "example": {
                     "en-us": [
-                        "Top Concept 1 Example 2",
-                        "Top Concept 1 Example 1"
+                        "Top Concept 1 Example 2"
                     ]
                 },
                 "hiddenLabel": {
@@ -133,7 +401,7 @@ describe("Contentful integration", () => {
                 ],
                 "modified": "2025-03-31T21:27:28.981Z"
             }
-            let contentFulConcept = copyDataPropertyValue(typeConcept, graphologiConcept, locales);
+            let contentFulConcept = copyDataPropertyValue(graphologiConcept, locales);
 
             expect(contentFulConcept["uri"]).to.be.eql("https://example.com/test1/caac69f6-d814-4f89-8234-1d51b16fbd9e");
 
@@ -152,12 +420,12 @@ describe("Contentful integration", () => {
             expect(contentFulConcept["notations"]).to.include("Top Concept 1 notation 1");
             expect(contentFulConcept["notations"].length).to.be.eql(2);
 
-            expect(contentFulConcept["note"]).to.be.eql({"en-US": "Top Concept 1 Change Note 1"});
-            expect(contentFulConcept["definition"]).to.be.eql({"en-US": "Top Concept 1 Definition 1"});
-            expect(contentFulConcept["editorialNote"]).to.be.eql({"en-US": "Top Concept 1 Editorial Note 1"});
-            expect(contentFulConcept["example"]).to.be.eql({"en-US": "Top Concept 1 Example 2"});
-            expect(contentFulConcept["historyNote"]).to.be.eql({"en-US": "Top Concept 1 History Note 1"});
-            expect(contentFulConcept["scopeNote"]).to.be.eql({"en-US": "Top Concept 1 Scope Note 1"});
+            expect(contentFulConcept["note"]["en-US"]).to.be.eql("Top Concept 1 Change Note 1");
+            expect(contentFulConcept["definition"]["en-US"]).to.be.eql("Top Concept 1 Definition 1");
+            expect(contentFulConcept["editorialNote"]["en-US"]).to.be.eql("Top Concept 1 Editorial Note 1");
+            expect(contentFulConcept["example"]["en-US"]).to.be.eql("Top Concept 1 Example 2");
+            expect(contentFulConcept["historyNote"]["en-US"]).to.be.eql("Top Concept 1 History Note 1");
+            expect(contentFulConcept["scopeNote"]["en-US"]).to.be.eql("Top Concept 1 Scope Note 1");
 
             expect(Object.keys(contentFulConcept).length).to.be.eql(11);
         })
@@ -198,7 +466,7 @@ describe("Contentful integration", () => {
                 ],
                 "type": "Concept"
             }
-            let contentFulConcept = copyDataPropertyValue(typeConcept, graphologiConcept, locales);
+            let contentFulConcept = copyDataPropertyValue(graphologiConcept, locales);
             expect(contentFulConcept["uri"]).to.be.eql("http://example.com/concepts/11111111/Cobra%20Plans");
 
             expect(contentFulConcept["prefLabel"]).to.be.eql({"en-US": "Cobra Plans"});
@@ -224,7 +492,7 @@ describe("Contentful integration", () => {
                 },
                 "type": "Concept"
             }
-            let contentFulConcept = copyDataPropertyValue(typeConcept, graphologiConcept, locales);
+            let contentFulConcept = copyDataPropertyValue(graphologiConcept, locales);
             expect(contentFulConcept["uri"]).to.be.eql("http://example.com/concepts/11111111/Cobra%20Plans");
 
             expect(contentFulConcept["prefLabel"]).to.be.eql({"en-US": "Cobra Plans"});
@@ -261,462 +529,14 @@ describe("Contentful integration", () => {
                 "modified": "2025-04-02T17:00:20.608Z",
                 "revisionNo": 5
             }
-            let contentFulConceptScheme = copyDataPropertyValue(typeConceptScheme, graphologiConceptScheme, locales);
+            let contentFulConceptScheme = copyDataPropertyValue(graphologiConceptScheme, locales);
 
             expect(contentFulConceptScheme["uri"]).to.be.eql("https://example.com/test2");
 
-            expect(contentFulConceptScheme["prefLabel"]).to.be.eql({"en-US": "Test 2"});
-            expect(contentFulConceptScheme["definition"]).to.be.eql({"en-US": "Test 2 description"});
+            expect(contentFulConceptScheme["prefLabel"]["en-US"]).to.be.eql("Test 2");
+            expect(contentFulConceptScheme["definition"]["en-US"]).to.be.eql("Test 2 description");
 
             expect(Object.keys(contentFulConceptScheme).length).to.be.eql(3);
-        })
-    })
-
-    describe("createConceptScheme", () => {
-        it('should create or update', async () => {
-            const conceptSchemeUri = "https://example.com/test1";
-            let graphologiConceptScheme = {
-                "id": conceptSchemeUri,
-                "title": {
-                    "en-US": "Airports"
-                },
-                "description": {
-                    "en-us": "Airports description"
-                }
-            };
-            let data = {
-                "graph": [graphologiConceptScheme]
-            }
-            let locales = [{"code": "en"}, {"code": "en-US"}];
-            await cleanup(JSON.stringify(data));
-            let allConceptSchemes = await getAllConceptSchemes();
-            let found = allConceptSchemes.find(cs => cs.uri === conceptSchemeUri);
-            expect(found).to.be.eql(undefined);
-            await createConceptScheme(graphologiConceptScheme, locales)
-            allConceptSchemes = await getAllConceptSchemes();
-            found = allConceptSchemes.find(cs => cs.uri === conceptSchemeUri);
-            expect(found).not.be.eql(undefined);
-            expect(found["prefLabel"]["en-US"]).to.be.eql("Airports");
-            expect(found["definition"]["en-US"]).to.be.eql("Airports description");
-
-            //Now update to test update
-            let newTitle = 'Airports New Title';
-            graphologiConceptScheme["title"]["en-US"] = newTitle;
-            await createConceptScheme(graphologiConceptScheme, locales)
-            allConceptSchemes = await getAllConceptSchemes();
-            found = allConceptSchemes.find(cs => cs.uri === conceptSchemeUri);
-            expect(found).not.be.eql(undefined);
-            expect(found["prefLabel"]["en-US"]).to.be.eql(newTitle);
-            expect(found["definition"]["en-US"]).to.be.eql("Airports description");
-        })
-    })
-
-    describe("createConcept", () => {
-        it('should create or update', async () => {
-            const conceptUri = "https://example.com/test1/caac69f6-d814-4f89-8234-1d51b16fbd9e";
-            let graphologiConcept = {
-                "id": conceptUri,
-                "altLabel": {
-                    "en-us": "Top Concept 1 Alternative Label 1"
-                },
-                "notation": [
-                    "Top Concept 1 notation 2 https://example.com/test1/caac69f6-d814-4f89-8234-1d51b16fbd9e",
-                    "Top Concept 1 notation 1 https://example.com/test1/caac69f6-d814-4f89-8234-1d51b16fbd9e"
-                ],
-                "inScheme": [
-                    "https://example.com/test1",
-                    "https://example.com/test2"
-                ],
-                "narrower": [
-                    "https://example.com/test1/348a2757-92fd-477e-9486-d4cedbacdcc3",
-                    "https://example.com/test1/d5203596-0e26-4c8e-a3ae-4f6ea4e3a33c"
-                ],
-                "prefLabel": {
-                    "en-us": "Top Concept 1"
-                },
-                "relatedMatch": [
-                    "https://example.com/test2/9c2b63b5-73a7-4a9e-ba61-e6ae660c676f"
-                ],
-                "example": {
-                    "en-us": [
-                        "Top Concept 1 Example 2",
-                        "Top Concept 1 Example 1"
-                    ]
-                },
-                "hiddenLabel": {
-                    "en-us": "Top Concept 1 Hidden Label 1"
-                },
-                "editorialNote": {
-                    "en-us": "Top Concept 1 Editorial Note 1"
-                },
-                "scopeNote": {
-                    "en-us": "Top Concept 1 Scope Note 1"
-                },
-                "historyNote": {
-                    "en-us": "Top Concept 1 History Note 1"
-                },
-                "changeNote": {
-                    "en-us": "Top Concept 1 Change Note 1"
-                },
-                "created": "2025-03-31T21:14:17.577Z",
-                "related": [
-                    "https://example.com/test1/af4b02e6-a40c-4117-b8db-d98affe2449c",
-                    "https://example.com/test1/049d8726-06d4-44fc-a7a2-e786bc4db0f3"
-                ],
-                "broader": [
-                    "https://example.com/test2/9c2b63b5-73a7-4a9e-ba61-e6ae660c676f"
-                ],
-                "type": "Concept",
-                "definition": {
-                    "en-us": "Top Concept 1 Definition 1"
-                },
-                "revisionNo": 21,
-                "topConceptOf": [
-                    "https://example.com/test1"
-                ],
-                "modified": "2025-03-31T21:27:28.981Z"
-            };
-            let data = {
-                "graph": [graphologiConcept]
-            }
-            let locales = [{"code": "en"}, {"code": "en-US"}];
-
-            await cleanup(JSON.stringify(data));
-
-            let allConcepts = await getAllConcepts();
-            let found = allConcepts.find(cs => cs.uri === conceptUri);
-            expect(found).to.be.eql(undefined);
-            await createConcept(graphologiConcept, locales)
-            allConcepts = await getAllConcepts();
-            found = allConcepts.find(cs => cs.uri === conceptUri);
-            expect(found).not.be.eql(undefined);
-            expect(found["prefLabel"]["en-US"]).to.be.eql("Top Concept 1");
-
-            //Now create again and assert update
-            let newTitle = "Top Concept 1 New Label";
-            graphologiConcept["prefLabel"]["en-US"] = newTitle;
-            graphologiConcept["notation"] = [
-                "Top Concept 1 notation 2 update https://example.com/test1/caac69f6-d814-4f89-8234-1d51b16fbd9e",
-                "Top Concept 1 notation 1 https://example.com/test1/caac69f6-d814-4f89-8234-1d51b16fbd9e"
-            ]
-            await createConcept(graphologiConcept, locales)
-            allConcepts = await getAllConcepts();
-            found = allConcepts.find(cs => cs.uri === conceptUri);
-            expect(found).not.be.eql(undefined);
-            expect(found["prefLabel"]["en-US"]).to.be.eql(newTitle);
-            expect(found["notations"].length).to.be.eql(2);
-            expect(found["notations"]).to.include("Top Concept 1 notation 1 https://example.com/test1/caac69f6-d814-4f89-8234-1d51b16fbd9e");
-            expect(found["notations"]).to.include("Top Concept 1 notation 2 update https://example.com/test1/caac69f6-d814-4f89-8234-1d51b16fbd9e");
-        })
-    })
-
-    describe("syncData", () => {
-        it('should update as changes are made in taxonomy', async () => {
-            const cs1Id = "https://ex.com/cs/1";
-            const c1Id = "https://ex.com/c/1";
-            const c2Id = "https://ex.com/c/2";
-            const c3Id = "https://ex.com/c/3";
-            const c4Id = "https://ex.com/c/4";
-            const c5Id = "https://ex.com/c/5";
-            const c6Id = "https://ex.com/c/6";
-
-            let allConceptSchemes = await getAllConceptSchemes();
-            let foundCS = allConceptSchemes.find(cs => cs.uri === cs1Id);
-            if(foundCS) {
-                await deleteConceptScheme(foundCS);
-            }
-            await deleteAllConcepts([c1Id, c2Id, c3Id, c4Id]);
-
-            let conceptScheme = {
-                "id" : cs1Id,
-                "type" : "ConceptScheme",
-                "title": {
-                    "en-us": "CS 1"
-                }
-            }
-            let data = {
-                "graph": [conceptScheme]
-            }
-            await syncData(data);
-
-            allConceptSchemes = await getAllConceptSchemes();
-            foundCS = allConceptSchemes.find(cs => cs.uri === conceptScheme.id);
-            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1");
-
-            //Now add top concept1 and assert
-            let concept1 = {
-                "id" : c1Id,
-                "type" : "Concept",
-                "prefLabel": {
-                    "en-us": "Top Concept 1"
-                },
-                'inScheme' : conceptScheme.id
-            }
-            conceptScheme['hasTopConcept'] = concept1.id;
-            data = {
-                "graph": [conceptScheme, concept1]
-            }
-            await syncData(data);
-
-            allConceptSchemes = await getAllConceptSchemes();
-            foundCS = allConceptSchemes.find(cs => cs.uri === conceptScheme.id);
-            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1");
-
-            let allConcepts = await getAllConcepts(foundCS.sys.id);
-            let foundC1 = allConcepts.find(cs => cs.uri === concept1.id);
-            expect(foundC1["prefLabel"]["en-US"]).to.be.eql("Top Concept 1");
-
-            let conceptIdsInCS = toArray(foundCS["concepts"]).map(c => c.sys.id);
-            expect(conceptIdsInCS).to.include(foundC1.sys.id);
-            expect(conceptIdsInCS.length).to.be.eql(1);
-
-            let topConceptIdsInCS = toArray(foundCS["topConcepts"]).map(c => c.sys.id);
-            expect(topConceptIdsInCS).to.include(foundC1.sys.id);
-            expect(topConceptIdsInCS.length).to.be.eql(1);
-
-            //Now add one more top concept and assert
-            let concept2 = {
-                "id" : c2Id,
-                "type" : "Concept",
-                "prefLabel": {
-                    "en-us": "Top Concept 2"
-                },
-                'inScheme' : conceptScheme.id
-            }
-            conceptScheme['hasTopConcept'] = [concept1.id, concept2.id];
-            data = {
-                "graph": [conceptScheme, concept1, concept2]
-            }
-            await syncData(data);
-
-            allConceptSchemes = await getAllConceptSchemes();
-            foundCS = allConceptSchemes.find(cs => cs.uri === conceptScheme.id);
-            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1");
-
-            allConcepts = await getAllConcepts(foundCS.sys.id);
-            foundC1 = allConcepts.find(cs => cs.uri === concept1.id);
-            expect(foundC1["prefLabel"]["en-US"]).to.be.eql("Top Concept 1");
-            let foundC2 = allConcepts.find(cs => cs.uri === concept2.id);
-            expect(foundC2["prefLabel"]["en-US"]).to.be.eql("Top Concept 2");
-
-            conceptIdsInCS = toArray(foundCS["concepts"]).map(c => c.sys.id);
-            expect(conceptIdsInCS).to.include(foundC1.sys.id);
-            expect(conceptIdsInCS).to.include(foundC2.sys.id);
-            expect(conceptIdsInCS.length).to.be.eql(2);
-
-            topConceptIdsInCS = toArray(foundCS["topConcepts"]).map(c => c.sys.id);
-            expect(topConceptIdsInCS).to.include(foundC1.sys.id);
-            expect(topConceptIdsInCS).to.include(foundC2.sys.id);
-            expect(topConceptIdsInCS.length).to.be.eql(2);
-
-            //Now add narrower and related
-            let concept3 = {
-                "id" : c3Id,
-                "type" : "Concept",
-                "prefLabel": {
-                    "en-us": "Concept 3"
-                },
-                "broader" : [c1Id],
-                'inScheme' : conceptScheme.id,
-                'related' : [c2Id]
-            }
-            concept1["narrower"] = [concept3.id];
-            data = {
-                "graph": [conceptScheme, concept1, concept2, concept3]
-            }
-            await syncData(data);
-
-            allConceptSchemes = await getAllConceptSchemes();
-            foundCS = allConceptSchemes.find(cs => cs.uri === conceptScheme.id);
-            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1");
-
-            allConcepts = await getAllConcepts(foundCS.sys.id);
-            foundC1 = allConcepts.find(cs => cs.uri === concept1.id);
-            expect(foundC1["prefLabel"]["en-US"]).to.be.eql("Top Concept 1");
-            foundC2 = allConcepts.find(cs => cs.uri === concept2.id);
-            expect(foundC2["prefLabel"]["en-US"]).to.be.eql("Top Concept 2");
-
-            let foundC3 = allConcepts.find(cs => cs.uri === concept3.id);
-            expect(foundC3["prefLabel"]["en-US"]).to.be.eql("Concept 3");
-            let broaderIdsInC3 = toArray(foundC3["broader"]).map(c => c.sys.id);
-            expect(broaderIdsInC3).to.include(foundC1.sys.id);
-            expect(broaderIdsInC3.length).to.be.eql(1);
-            let relatedIdsInC3 = toArray(foundC3["related"]).map(c => c.sys.id);
-            expect(relatedIdsInC3).to.include(foundC2.sys.id);
-            expect(relatedIdsInC3.length).to.be.eql(1);
-
-            conceptIdsInCS = toArray(foundCS["concepts"]).map(c => c.sys.id);
-            expect(conceptIdsInCS).to.include(foundC1.sys.id);
-            expect(conceptIdsInCS).to.include(foundC2.sys.id);
-            expect(conceptIdsInCS).to.include(foundC3.sys.id);
-            expect(conceptIdsInCS.length).to.be.eql(3);
-
-            topConceptIdsInCS = toArray(foundCS["topConcepts"]).map(c => c.sys.id);
-            expect(topConceptIdsInCS).to.include(foundC1.sys.id);
-            expect(topConceptIdsInCS).to.include(foundC2.sys.id);
-            expect(topConceptIdsInCS.length).to.be.eql(2);
-
-            //Now add one more narrower and related
-            let concept4 = {
-                "id" : c4Id,
-                "type" : "Concept",
-                "prefLabel": {
-                    "en-us": "Concept 4"
-                },
-                "broader" : [c3Id],
-                'inScheme' : conceptScheme.id,
-                'related' : [c2Id, c1Id]
-            }
-            concept3["narrower"] = [concept4.id];
-            data = {
-                "graph": [conceptScheme, concept1, concept2, concept3, concept4]
-            }
-            await syncData(data);
-
-            allConceptSchemes = await getAllConceptSchemes();
-            foundCS = allConceptSchemes.find(cs => cs.uri === conceptScheme.id);
-            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1");
-
-            allConcepts = await getAllConcepts(foundCS.sys.id);
-            foundC1 = allConcepts.find(cs => cs.uri === concept1.id);
-            expect(foundC1["prefLabel"]["en-US"]).to.be.eql("Top Concept 1");
-            foundC2 = allConcepts.find(cs => cs.uri === concept2.id);
-            expect(foundC2["prefLabel"]["en-US"]).to.be.eql("Top Concept 2");
-
-            foundC3 = allConcepts.find(cs => cs.uri === concept3.id);
-            expect(foundC3["prefLabel"]["en-US"]).to.be.eql("Concept 3");
-            broaderIdsInC3 = toArray(foundC3["broader"]).map(c => c.sys.id);
-            expect(broaderIdsInC3).to.include(foundC1.sys.id);
-            expect(broaderIdsInC3.length).to.be.eql(1);
-            relatedIdsInC3 = toArray(foundC3["related"]).map(c => c.sys.id);
-            expect(relatedIdsInC3).to.include(foundC2.sys.id);
-            expect(relatedIdsInC3.length).to.be.eql(1);
-
-            let foundC4 = allConcepts.find(cs => cs.uri === concept4.id);
-            expect(foundC4["prefLabel"]["en-US"]).to.be.eql("Concept 4");
-            let broaderIdsInC4 = toArray(foundC4["broader"]).map(c => c.sys.id);
-            expect(broaderIdsInC4).to.include(foundC3.sys.id);
-            expect(broaderIdsInC4.length).to.be.eql(1);
-            let relatedIdsInC4 = toArray(foundC4["related"]).map(c => c.sys.id);
-            expect(relatedIdsInC4).to.include(foundC1.sys.id);
-            expect(relatedIdsInC4).to.include(foundC2.sys.id);
-            expect(relatedIdsInC4.length).to.be.eql(2);
-
-            conceptIdsInCS = toArray(foundCS["concepts"]).map(c => c.sys.id);
-            expect(conceptIdsInCS).to.include(foundC1.sys.id);
-            expect(conceptIdsInCS).to.include(foundC2.sys.id);
-            expect(conceptIdsInCS).to.include(foundC3.sys.id);
-            expect(conceptIdsInCS).to.include(foundC4.sys.id);
-            expect(conceptIdsInCS.length).to.be.eql(4);
-
-            topConceptIdsInCS = toArray(foundCS["topConcepts"]).map(c => c.sys.id);
-            expect(topConceptIdsInCS).to.include(foundC1.sys.id);
-            expect(topConceptIdsInCS).to.include(foundC2.sys.id);
-            expect(topConceptIdsInCS.length).to.be.eql(2);
-
-            //Now delete top concept 2 and updated c3, c4 related
-            conceptScheme['hasTopConcept'] = [concept1.id];
-            concept4['related'] = [c1Id]
-            data = {
-                "graph": [conceptScheme, concept1, concept3, concept4]
-            }
-            await syncData(data);
-
-            allConceptSchemes = await getAllConceptSchemes();
-            foundCS = allConceptSchemes.find(cs => cs.uri === conceptScheme.id);
-            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1");
-
-            allConcepts = await getAllConcepts(foundCS.sys.id);
-            foundC1 = allConcepts.find(cs => cs.uri === concept1.id);
-            expect(foundC1["prefLabel"]["en-US"]).to.be.eql("Top Concept 1");
-
-            foundC2 = allConcepts.find(cs => cs.uri === concept2.id);
-            expect(foundC2).to.be.eql(undefined);
-
-            foundC3 = allConcepts.find(cs => cs.uri === concept3.id);
-            foundC4 = allConcepts.find(cs => cs.uri === concept4.id);
-
-            expect(foundC3["prefLabel"]["en-US"]).to.be.eql("Concept 3");
-            broaderIdsInC3 = toArray(foundC3["broader"]).map(c => c.sys.id);
-            expect(broaderIdsInC3).to.include(foundC1.sys.id);
-            expect(broaderIdsInC3.length).to.be.eql(1);
-            relatedIdsInC3 = toArray(foundC3["related"]).map(c => c.sys.id);
-            expect(relatedIdsInC3.length).to.be.eql(0);
-
-            expect(foundC4["prefLabel"]["en-US"]).to.be.eql("Concept 4");
-            broaderIdsInC4 = toArray(foundC4["broader"]).map(c => c.sys.id);
-            expect(broaderIdsInC4).to.include(foundC3.sys.id);
-            expect(broaderIdsInC4.length).to.be.eql(1);
-            relatedIdsInC4 = toArray(foundC4["related"]).map(c => c.sys.id);
-            expect(relatedIdsInC4).to.include(foundC1.sys.id);
-            expect(relatedIdsInC4.length).to.be.eql(1);
-
-            conceptIdsInCS = toArray(foundCS["concepts"]).map(c => c.sys.id);
-            expect(conceptIdsInCS).to.include(foundC1.sys.id);
-            expect(conceptIdsInCS).to.include(foundC3.sys.id);
-            expect(conceptIdsInCS).to.include(foundC4.sys.id);
-            expect(conceptIdsInCS.length).to.be.eql(3);
-
-            topConceptIdsInCS = toArray(foundCS["topConcepts"]).map(c => c.sys.id);
-            expect(topConceptIdsInCS).to.include(foundC1.sys.id);
-            expect(topConceptIdsInCS.length).to.be.eql(1);
-
-            //Now add two more concept in hierarchy and create related
-            let concept5 = {
-                "id" : c5Id,
-                "type" : "Concept",
-                "prefLabel": {
-                    "en-us": "Concept 5"
-                },
-                "narrower" : c6Id,
-                'inScheme' : conceptScheme.id
-            }
-            let concept6 = {
-                "id" : c6Id,
-                "type" : "Concept",
-                "prefLabel": {
-                    "en-us": "Concept 6"
-                },
-                "broader" : [c5Id],
-                'inScheme' : conceptScheme.id,
-                'related' : [c1Id, c4Id]
-            }
-            conceptScheme['hasTopConcept'] = [concept1.id, concept5.id];
-            data = {
-                "graph": [conceptScheme, concept1, concept3, concept4, concept5, concept6]
-            }
-            await syncData(data);
-
-            allConceptSchemes = await getAllConceptSchemes();
-            foundCS = allConceptSchemes.find(cs => cs.uri === conceptScheme.id);
-            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1");
-
-            allConcepts = await getAllConcepts(foundCS.sys.id);
-            foundC1 = allConcepts.find(cs => cs.uri === concept1.id);
-            foundC3 = allConcepts.find(cs => cs.uri === concept3.id);
-            foundC4 = allConcepts.find(cs => cs.uri === concept4.id);
-
-            let foundC5 = allConcepts.find(cs => cs.uri === concept5.id);
-            let foundC6 = allConcepts.find(cs => cs.uri === concept6.id);
-
-            let relatedIdsInC6 = toArray(foundC6["related"]).map(c => c.sys.id);
-            expect(relatedIdsInC6).to.include(foundC1.sys.id);
-            expect(relatedIdsInC6).to.include(foundC4.sys.id);
-            expect(relatedIdsInC6.length).to.be.eql(2);
-
-            conceptIdsInCS = toArray(foundCS["concepts"]).map(c => c.sys.id);
-            expect(conceptIdsInCS).to.include(foundC1.sys.id);
-            expect(conceptIdsInCS).to.include(foundC3.sys.id);
-            expect(conceptIdsInCS).to.include(foundC4.sys.id);
-            expect(conceptIdsInCS).to.include(foundC5.sys.id);
-            expect(conceptIdsInCS).to.include(foundC6.sys.id);
-            expect(conceptIdsInCS.length).to.be.eql(5);
-
-            topConceptIdsInCS = toArray(foundCS["topConcepts"]).map(c => c.sys.id);
-            expect(topConceptIdsInCS).to.include(foundC1.sys.id);
-            expect(topConceptIdsInCS).to.include(foundC5.sys.id);
-            expect(topConceptIdsInCS.length).to.be.eql(2);
-
         })
     })
 })
