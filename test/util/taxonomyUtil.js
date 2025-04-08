@@ -66,7 +66,14 @@ export function createTaxonomy(spec) {
     let csId = baseIRI + "/cs";
 
     function getCid(depthCounter, i) {
-        return csId + "/depth" + depthCounter + "/c" + i;
+        if(depthCounter === 0) {
+            return csId + "/depth" + depthCounter + "/c" + i;
+        }
+        let parent = "";
+        for(let j = 0; j < depthCounter; j++) {
+            parent += "" + i;
+        }
+        return csId +"/" +parent+"/depth" + depthCounter + "/c" + i;
     }
 
     let conceptScheme = {

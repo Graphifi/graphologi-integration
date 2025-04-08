@@ -10,7 +10,8 @@ import {
 } from '../../../service/contentful/taxonomy.js'
 import {expect} from "chai";
 import {generateKeyPair} from "../../../service/authentication.js";
-import {cleanup, deleteAllConcepts, deleteConceptScheme} from "../../util/contentfulUtil.js";
+import {cleanup, deleteAllConcepts} from "../../util/contentfulUtil.js";
+import {createTestConcept} from "../../util/taxonomyUtil.js";
 
 describe("Contentful taxonomy integration", () => {
 
@@ -479,5 +480,153 @@ describe("Contentful taxonomy integration", () => {
             expect(topConceptIdsInCS.length).to.be.eql(2);
 
         })
+
+        it('should delete left over concepts', async function () {
+            const cs1Id = "https://ex.com/cs/1";
+            const c1Id = "https://ex.com/c/1";
+            const c2Id = "https://ex.com/c/2";
+            const c3Id = "https://ex.com/c/3";
+            const c4Id = "https://ex.com/c/4";
+            const c5Id = "https://ex.com/c/5";
+            const c6Id = "https://ex.com/c/6";
+
+            let conceptScheme = {
+                "id" : cs1Id,
+                "type" : "ConceptScheme",
+                "title": {
+                    "en-us": "CS 1"
+                }
+            }
+            let data = {
+                "graph": [conceptScheme, createTestConcept(c1Id, "Concept 1"), createTestConcept(c2Id, "Concept 2"), createTestConcept(c3Id, "Concept 3"), createTestConcept(c4Id, "Concept 4"), createTestConcept(c5Id, "Concept 5"), createTestConcept(c6Id, "Concept 6")]
+            }
+            await cleanup(JSON.stringify(data));
+
+            let allConcepts = await getAllConcepts();
+            let found = allConcepts.find(cs => data.graph.map(r => r.id).includes(cs.uri));
+            expect(found).to.be.eql(undefined);
+
+            await syncData(data);
+
+            allConcepts = await getAllConcepts();
+            found = allConcepts.filter(cs => data.graph.map(r => r.id).includes(cs.uri)).map(cs => cs.uri);
+            expect(found.length).to.be.eql(6);
+
+            data = {
+                "graph": [conceptScheme, createTestConcept(c1Id, "Concept 1"), createTestConcept(c2Id, "Concept 2")]
+            };
+
+            await syncData(data);
+
+            allConcepts = await getAllConcepts();
+            found = allConcepts.filter(cs => data.graph.map(r => r.id).includes(cs.uri)).map(cs => cs.uri);
+            expect(found.length).to.be.eql(2);
+
+        })
+
+        it('should not delete data from other concept schemes', async function () {
+            const cs1Id = "https://ex.com/cs/1";
+            const cs2Id = "https://ex.com/cs/2";
+            const c1Id = "https://ex.com/c/1";
+            const c2Id = "https://ex.com/c/2";
+            const c3Id = "https://ex.com/c/3";
+            const c4Id = "https://ex.com/c/4";
+            const c5Id = "https://ex.com/c/5";
+            const c6Id = "https://ex.com/c/6";
+            const c7Id = "https://ex.com/c/7";
+
+            let conceptScheme1 = {
+                "id" : cs1Id,
+                "type" : "ConceptScheme",
+                "title": {
+                    "en-us": "CS 1"
+                }
+            }
+            let conceptScheme2 = {
+                "id" : cs2Id,
+                "type" : "ConceptScheme",
+                "title": {
+                    "en-us": "CS 2"
+                }
+            }
+            let data = {
+                "graph": [
+                    conceptScheme1,
+                    conceptScheme2,
+                    createTestConcept(c1Id, "Concept 1", undefined, cs1Id),
+                    createTestConcept(c2Id, "Concept 2", undefined, cs2Id),
+                    createTestConcept(c3Id, "Concept 3", undefined, cs2Id),
+                    createTestConcept(c4Id, "Concept 4", undefined, cs2Id),
+                    createTestConcept(c5Id, "Concept 5", undefined),
+                    createTestConcept(c6Id, "Concept 6", undefined)
+                ]
+            }
+            await cleanup(JSON.stringify(data));
+            await syncData(data);
+
+            let allConceptURIs = [c1Id, c2Id, c3Id, c4Id, c5Id, c6Id];
+            let allConcepts = await getAllConcepts();
+            let concepts = allConcepts.filter(cs => allConceptURIs.includes(cs.uri));
+            expect(concepts.length).to.be.eql(6);
+            allConceptURIs.forEach(u => {
+                expect(concepts.filter(c => c.uri === u).length).to.be.eql(1);
+            })
+
+            //Now create a new CS with concept
+            let cs3Id = "https://ex.com/cs/3"
+            let conceptScheme3 = {
+                "id" : cs3Id,
+                "type" : "ConceptScheme",
+                "title": {
+                    "en-us": "CS 3"
+                }
+            }
+            data = {
+                "graph": [
+                    conceptScheme3,
+                    createTestConcept(c7Id, "Concept 7", undefined, cs3Id)
+                ]
+            }
+            await cleanup(JSON.stringify(data));
+            await syncData(data);
+
+            //Assert other data is still there
+            allConceptURIs = [c1Id, c2Id, c3Id, c4Id, c5Id, c6Id];
+            allConcepts = await getAllConcepts();
+            concepts = allConcepts.filter(cs => allConceptURIs.includes(cs.uri));
+            expect(concepts.length).to.be.eql(6);
+            allConceptURIs.forEach(u => {
+                expect(concepts.filter(c => c.uri === u).length).to.be.eql(1);
+            })
+            //Assert new data is also there
+            allConceptURIs = [c7Id];
+            allConcepts = await getAllConcepts();
+            concepts = allConcepts.filter(cs => allConceptURIs.includes(cs.uri));
+            expect(concepts.length).to.be.eql(1);
+            allConceptURIs.forEach(u => {
+                expect(concepts.filter(c => c.uri === u).length).to.be.eql(1);
+            })
+
+            //Now delete a concept from the new CS and assert other data is still there
+            data = {
+                "graph": [conceptScheme3]
+            }
+            await syncData(data);
+
+            //Assert other data is still there
+            allConceptURIs = [c1Id, c2Id, c3Id, c4Id, c5Id, c6Id];
+            allConcepts = await getAllConcepts();
+            concepts = allConcepts.filter(cs => allConceptURIs.includes(cs.uri));
+            expect(concepts.length).to.be.eql(6);
+            allConceptURIs.forEach(u => {
+                expect(concepts.filter(c => c.uri === u).length).to.be.eql(1);
+            })
+            //Assert new data is also there
+            allConceptURIs = [c7Id];
+            allConcepts = await getAllConcepts();
+            concepts = allConcepts.filter(cs => allConceptURIs.includes(cs.uri));
+            expect(concepts.length).to.be.eql(0);
+        })
+
     })
 })

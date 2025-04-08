@@ -120,7 +120,8 @@ describe("Contentful integration", () => {
             let data = {graph : taxonomy};
             let errors = await syncData(data);
 
-            taxonomy = createTaxonomy({depth: 4, conceptCount:5, baseIRI: "http://ex.com/1"});
+            let conceptCount = 10;
+            taxonomy = createTaxonomy({depth: 1, conceptCount: conceptCount, baseIRI: "http://ex.com/1"});
             data = {graph : taxonomy};
             await syncData(data);
             //console.log(JSON.stringify(taxonomy, null, 2));

@@ -99,17 +99,20 @@ export function toArray(value) {
 
 
 function addConceptToContext(context, concept) {
-    let existingConcepts = context['beforeUpdate']['concepts'];
-    context['beforeUpdate']['concepts'] = [...existingConcepts.filter(ec => ec.uri !== concept.uri), concept]
+    if(!concept) {
+        return
+    }
+    let existingConcepts = context['data']['concepts'];
+    context['data']['concepts'] = [...existingConcepts.filter(ec => ec.uri !== concept.uri), concept]
 }
 
 function removeConceptFromContext(context, concept) {
-    let existingConcepts = context['beforeUpdate']['concepts'];
-    context['beforeUpdate']['concepts'] = existingConcepts.filter(ec => ec.uri !== concept.uri);
+    let existingConcepts = context['data']['concepts'];
+    context['data']['concepts'] = existingConcepts.filter(ec => ec.uri !== concept.uri);
 }
 
 function getConceptsFromContext(context) {
-    return toArray(context['beforeUpdate']['concepts']);
+    return toArray(context?.['data']?.['concepts']);
 }
 
 function getConceptFromContext(context, conceptURI, conceptId) {
@@ -122,10 +125,33 @@ function getConceptFromContext(context, conceptURI, conceptId) {
     }
 }
 
-function addConceptSchemeToContext(context, conceptScheme) {
-    let existingConcepts = context['beforeUpdate']['conceptSchemes'];
-    context['beforeUpdate']['concepts'] = [...existingConcepts.filter(ec => ec.uri !== conceptScheme.uri), conceptScheme]
+export function addConceptSchemeToContext(context, conceptScheme) {
+    if(!conceptScheme) {
+        return;
+    }
+    let existing = getConceptSchemesFromContext(context);
+    let rest = existing.filter(ec => ec.uri !== conceptScheme.uri);
+    context['data']['conceptSchemes'] = [...rest, conceptScheme]
 }
+
+export function getConceptSchemesFromContext(context) {
+    return toArray(context['data']['conceptSchemes']);
+}
+
+function getConceptSchemesBeforeUpdate(context) {
+    return toArray(context['beforeUpdate']['conceptSchemes']);
+}
+
+function getConceptSchemeFromContext(context, conceptSchemeURI, conceptSchemeId) {
+    let existing = getConceptSchemesFromContext(context);
+    if(conceptSchemeURI) {
+        return existing.find(ec => ec.uri === conceptSchemeURI);
+    }
+    if(conceptSchemeId) {
+        return existing.find(ec => ec.sys.id === conceptSchemeId);
+    }
+}
+
 /*
 Preconditions
 - Graphologi is source of truth for the concept scheme and concepts in payload
@@ -163,7 +189,7 @@ export async function syncData(data) {
     await updateBroader(graphData, context);
     await updateConceptsList(graphData, context);
     //Adding top concepts before adding concept in scheme will fail
-    await updateTopConceptsList(graphData);
+    await updateTopConceptsList(graphData, context);
     await deleteLeftOverConcepts(graphData, context);
 }
 
@@ -179,8 +205,9 @@ export async function syncData(data) {
       else update data properties
  */
 async function createNewResources(data, context) {
+    logInfo('Start createNewResources');
     let localesData = context['locales'];
-    let allCSInCF = context['beforeUpdate']['conceptSchemes'];
+    let allCSInCF = context['data']['conceptSchemes'];
     let csInPayload = data.filter(c => c.type === typeConceptScheme);
     let csToAdd = csInPayload.filter(cs => !allCSInCF.find(csInCF => csInCF.uri === cs.id));
     for(let i = 0; i < csToAdd.length; i++) {
@@ -188,12 +215,12 @@ async function createNewResources(data, context) {
         let conceptScheme = await createConceptScheme(cs, localesData);
         addConceptSchemeToContext(context, conceptScheme);
     }
-    let allCInCF = context['beforeUpdate']['concepts'];
+    let allCInCF = context['data']['concepts'];
     let cInPayload = data.filter(c => c.type === typeConcept);
     let cToAdd = cInPayload.filter(c => !allCInCF.find(cInCF => cInCF.uri === c.id));
     for(let i = 0; i < cToAdd.length; i++) {
         let c = cToAdd[i];
-        let concept = await createConcept(c, localesData);
+        let concept = await createConcept(c, localesData, undefined, context);
         addConceptToContext(context, concept);
     }
 }
@@ -224,6 +251,7 @@ async function updateBroader(data, context) {
 }
 
 async function updateLink(data, context, linkKeyInCF, linkKeyInPayload, symmetric) {
+    logInfo('Start updateLink for ' + linkKeyInCF);
     let conceptsInPayload = data.filter(c => c.type === typeConcept);
     let uniqueRelatedPairsInPayload = {};
     conceptsInPayload.forEach(cInP => {
@@ -233,7 +261,7 @@ async function updateLink(data, context, linkKeyInCF, linkKeyInPayload, symmetri
             addPair(pair, uniqueRelatedPairsInPayload, symmetric);
         })
     });
-    let conceptsInCF = context['beforeUpdate']['concepts'];
+    let conceptsInCF = context['data']['concepts'];
     let uniqueRelatedPairsInCF = {};
     conceptsInCF.forEach(cInCF => {
         let found = conceptsInPayload.find(cInP => cInP.id === cInCF.uri);
@@ -282,7 +310,7 @@ async function updateLink(data, context, linkKeyInCF, linkKeyInPayload, symmetri
             let co =  getConceptFromContext(context, k);
             let startIndex = co[linkKeyInCF].length;
             let patchPayload = toAdd.map((rid, i) => {
-                let cInCF = getConceptsFromContext(context).find(c => c.uri === rid);
+                let cInCF = getConceptFromContext(context, rid);// getConceptsFromContext(context).find(c => c.uri === rid);
 
                 let id = cInCF?.sys?.id;
                 if(!id) {
@@ -328,16 +356,23 @@ function addPair(pair, collector, symmetric) {
     - delete
  */
 async function deleteLeftOverConcepts(data, context) {
+    logInfo('Start deleteLeftOverConcepts');
     // Fetch all concept in CF
-    let allCInCF = context['beforeUpdate']['concepts'];
+    let allCInCF = getConceptsFromContext(context);
     // - For each concept
     for (const cCF of allCInCF) {
         //find its CSs in CF
-        let cCSsInCF = context['beforeUpdate']['conceptSchemes'].filter(cs => cs.concepts.includes(cCF.sys.id));
+        let cCSsInCF = getConceptSchemesBeforeUpdate(context).filter(cs => {
+            let cCFIDs = toArray(cs.concepts).map(co => co.sys.id);
+            return cCFIDs.includes(cCF.sys.id)
+        });
         // find all the CSs in payload
         let cCSsInPayload = data.filter(c => c.type === typeConceptScheme);
 
-        let payloadHasAllCSs = cCSsInCF.filter(ccs => cCSsInPayload.find(csP => csP.id === ccs.uri)).length === cCSsInCF.length;
+        let inPayload = cCSsInCF.filter(ccs => cCSsInPayload.find(csP => csP.id === ccs.uri));
+        let cCSsInCFURIs = cCSsInCF.map(cs => cs.uri);
+        let inPayloadURIs = inPayload.map(cs => cs.uri);
+        let payloadHasAllCSs = cCSsInCF.length > 0 && listsEqual(cCSsInCFURIs, inPayloadURIs);
         if(payloadHasAllCSs) {
             let cInPayload = data.find(c => c.id === cCF.uri);
             if(!cInPayload) {
@@ -349,6 +384,14 @@ async function deleteLeftOverConcepts(data, context) {
     }
 }
 
+
+export function initContext(context, csInCF, cInCF) {
+    context["data"] = {};
+    context["beforeUpdate"] = {};
+    context["data"]["conceptSchemes"] = csInCF || [];
+    context["beforeUpdate"]["conceptSchemes"] = csInCF || [];
+    context["data"]["concepts"] = cInCF || [];
+}
 
 /*
 Some limits are from https://www.contentful.com/developers/docs/technical-limits-2025/ and other taken from UI
@@ -373,9 +416,8 @@ export async function validate(data, context) {
     let errorsCollector = [];
     let csInCF = await getAllConceptSchemes();
     let cInCF = await getAllConcepts();
-    context["beforeUpdate"] = {};
-    context["beforeUpdate"]["conceptSchemes"] = csInCF;
-    context["beforeUpdate"]["concepts"] = cInCF;
+    //Prepare context data
+    initContext(context, csInCF, cInCF);
 
     await validateConceptSchemeCounts(data, context, errorsCollector);
     await validateConceptCounts(data, context, errorsCollector);
@@ -394,12 +436,12 @@ export async function validateConceptSchemeCounts(data, context, errorsCollector
     if (csCount > csLimit) {
         errorsCollector.push(`Maximum ${csLimit} concept scheme allowed in Contentful. Payload contains ${csCount}.`);
     }
-    let csInCF = context['beforeUpdate']['conceptSchemes'];
+    let csInCF = getConceptSchemesFromContext(context);
     let csInCFURIs = csInCF.map(cs => cs.uri);
     let csToAdd = conceptSchemes.filter(cs => !csInCFURIs.includes(cs.id));
     let totalCSinCF = csToAdd.length + csInCF.length;
     if (totalCSinCF > csLimit) {
-        errorsCollector.push(`Maximum ${csLimit} concept scheme allowed in Contentful. Payload adds ${csToAdd.length} new concept schemes but there are already ${csInCF.length} concept schemes in Contentful.`);
+        errorsCollector.push(`Maximum ${csLimit} concept scheme allowed in Contentful. Payload adds ${csToAdd.length} new concept schemes and there are already ${csInCF.length} concept schemes in Contentful.`);
     }
 }
 
@@ -413,7 +455,7 @@ export async function validateConceptCounts(data, context, errorsCollector) {
     if(cCount > cLimit) {
         errorsCollector.push(`Maximum ${cLimit} concepts allowed in Contentful. Payload has ${cCount} concepts.`);
     }
-    let cInCF = context['beforeUpdate']['concepts'];
+    let cInCF = context['data']['concepts'];
     let cInCFURIs = cInCF.map(cs => cs.uri);
     let cToAdd = concepts.filter(cs => !cInCFURIs.includes(cs.id));
     let totalCinCF = cToAdd.length + cInCF;
@@ -426,7 +468,7 @@ export async function validateConceptCounts(data, context, errorsCollector) {
     - check concept count in scheme not more than 2000
  */
 export async function validateConceptCountsInScheme(data, context, errorsCollector) {
-    let csInCF = context['beforeUpdate']['conceptSchemes'];
+    let csInCF = context['data']['conceptSchemes'];
     let csInPayloadURIs = data.filter(c => c['type'] === typeConceptScheme).map(cs => cs.id);
     const limit = 2000;
     for (const csURI in csInPayloadURIs) {
@@ -566,20 +608,20 @@ export function listsEqual(first, second) {
 - From two lists find concepts which are not in payload and remove
 - From two lists find concepts which are in payload but not is Contenful list add
  */
-async function updateTopConceptsList(graphData) {
-    logDebug("updateTopConceptsList");
+async function updateTopConceptsList(graphData, context) {
+    logInfo("Start updateTopConceptsList");
 
     let conceptSchemesFromGraphologi = graphData.filter(item => item.type === typeConceptScheme);
     for (let k = 0; k < conceptSchemesFromGraphologi.length; k++) {
         let conceptSchemeFromGraphologi = conceptSchemesFromGraphologi[k];
         let conceptSchemeURI = conceptSchemeFromGraphologi.id;
-        let conceptSchemeFromContentFul = await getConceptSchemeFromContentFul(conceptSchemeURI);
+        let conceptSchemeFromContentFul = getConceptSchemeFromContext(context, conceptSchemeURI);// await getConceptSchemeFromContentFul(conceptSchemeURI);
         let currentTopConceptsContentfulIds = toArray(conceptSchemeFromContentFul?.["topConcepts"]);
         let topConceptIdsFromGraphologiCS = toArray(conceptSchemeFromGraphologi["hasTopConcept"]);
         let topConceptIdsFromContentfulCS = [];
         for (let i=0;i<currentTopConceptsContentfulIds.length;i++) {
             let cid = currentTopConceptsContentfulIds[i].sys.id;
-            let co = await getConceptFromContentFul(undefined, cid);
+            let co = getConceptFromContext(context, undefined, cid);// await getConceptFromContentFul(undefined, cid);
             topConceptIdsFromContentfulCS.push(co.uri);
         }
         let equal = listsEqual(topConceptIdsFromContentfulCS, topConceptIdsFromGraphologiCS);
@@ -587,7 +629,7 @@ async function updateTopConceptsList(graphData) {
             let newTopConceptsForContentFulIds = [];
             for (let i=0;i<topConceptIdsFromGraphologiCS.length;i++) {
                 let uri = topConceptIdsFromGraphologiCS[i];
-                let co = await getConceptFromContentFul(uri);
+                let co = getConceptFromContext(context, uri);// await getConceptFromContentFul(uri);
                 if(co) {
                     newTopConceptsForContentFulIds.push(co.sys.id);
                 }
@@ -606,7 +648,8 @@ async function updateTopConceptsList(graphData) {
 
             let endpoint = `https://api.contentful.com/organizations/${organizationId}/taxonomy/concept-schemes/${conceptSchemeFromContentFul.sys.id}`;
             if(toRemove.length > 0) {
-                await patchToContentful(endpoint, toRemove, conceptSchemeFromContentFul.sys.version);
+                let cs = await patchToContentful(endpoint, toRemove, conceptSchemeFromContentFul.sys.version);
+                addConceptSchemeToContext(context, cs);
             }
             //Add new
             conceptSchemeFromContentFul = await getConceptSchemeFromContentFul(conceptSchemeURI);
@@ -621,7 +664,8 @@ async function updateTopConceptsList(graphData) {
                     }
                 }).filter(o => o);
             if(toAdd.length > 0) {
-                await patchToContentful(endpoint, toAdd, conceptSchemeFromContentFul.sys.version);
+                let cs = await patchToContentful(endpoint, toAdd, conceptSchemeFromContentFul.sys.version);
+                addConceptSchemeToContext(context, cs);
             }
         }
 
@@ -642,7 +686,7 @@ async function updateTopConceptsList(graphData) {
 
  */
 async function updateConceptsList(graphData, context) {
-    logDebug("updateConceptsList ")
+    logInfo("Start updateConceptsList ")
     let conceptSchemesFromGraphologi = graphData.filter(item => item.type === typeConceptScheme);
 
     for (let k = 0; k < conceptSchemesFromGraphologi.length; k++) {
@@ -655,18 +699,18 @@ async function updateConceptsList(graphData, context) {
         let conceptURIsFromGraphologiCSWhichAreInCF = [];
         for(let i = 0;i<conceptURIsFromGraphologiCS.length;i++) {
             let uri = conceptURIsFromGraphologiCS[i];
-            let concept = await getConceptFromContentFul(uri);
+            let concept = getConceptFromContext(context, uri);// await getConceptFromContentFul(uri);
             if(concept) {
                 conceptURIsFromGraphologiCSWhichAreInCF.push(uri);
             }
         }
-        let conceptSchemeFromContentFul = await getConceptSchemeFromContentFul(conceptSchemeURI);
+        let conceptSchemeFromContentFul = getConceptSchemeFromContext(context, conceptSchemeURI);// await getConceptSchemeFromContentFul(conceptSchemeURI);
         let currentConceptsContentfulIds = toArray(conceptSchemeFromContentFul?.["concepts"]);
         let conceptURIsFromContentfulCS = [];
 
         for(let i=0;i<currentConceptsContentfulIds.length;i++) {
             let cid = currentConceptsContentfulIds[i].sys.id;
-            let c = await getConceptFromContentFul(undefined, cid);
+            let c = getConceptFromContext(context, undefined, cid);// await getConceptFromContentFul(undefined, cid);
             if(c) {
                 conceptURIsFromContentfulCS.push(c.uri);
             }
@@ -699,10 +743,11 @@ async function updateConceptsList(graphData, context) {
                 .reverse();
             let endpoint = `https://api.contentful.com/organizations/${organizationId}/taxonomy/concept-schemes/${conceptSchemeFromContentFul.sys.id}`;
             if(toRemove.length > 0) {
-                await patchToContentful(endpoint, toRemove, conceptSchemeFromContentFul.sys.version);
+                let res = await patchToContentful(endpoint, toRemove, conceptSchemeFromContentFul.sys.version);
+                addConceptSchemeToContext(context, res);
             }
             //Add new
-            conceptSchemeFromContentFul = await getConceptSchemeFromContentFul(conceptSchemeURI);
+            conceptSchemeFromContentFul = getConceptSchemeFromContext(context, conceptSchemeURI);// await getConceptSchemeFromContentFul(conceptSchemeURI);
             let addOffset = toArray(conceptSchemeFromContentFul["concepts"]).length;
             let toAdd = newConceptsForContentFulIds
                 .filter(nbid => !currentConceptsContentfulIds.includes(nbid))
@@ -714,7 +759,8 @@ async function updateConceptsList(graphData, context) {
                     }
                 }).filter(o => o);
             if(toAdd.length > 0) {
-                await patchToContentful(endpoint, toAdd, conceptSchemeFromContentFul.sys.version);
+                let cs = await patchToContentful(endpoint, toAdd, conceptSchemeFromContentFul.sys.version);
+                addConceptSchemeToContext(context, cs);
             }
         }
     }
@@ -767,13 +813,14 @@ async function hasChange(existingResource, payload) {
     return true;
 }
 
-export async function createConcept(graphologiConcept, locales, additionalPropertiesSetter) {
-    logInfo("Creating concept: "+graphologiConcept.id);
+export async function createConcept(graphologiConcept, locales, additionalPropertiesSetter, context ) {
+    let conceptURI = graphologiConcept.id;
+    logInfo("Creating concept: "+conceptURI);
     let payload = copyDataPropertyValue(graphologiConcept, locales);
     if(additionalPropertiesSetter) {
         additionalPropertiesSetter(payload)
     }
-    let existingResource = await getConceptFromContentFul(graphologiConcept.id);
+    let existingResource = getConceptFromContext(context, conceptURI);// await getConceptFromContentFul(graphologiConcept.id);
     let changeNeeded = await hasChange(existingResource, payload);
     if(!changeNeeded) {
         return;
@@ -783,10 +830,10 @@ export async function createConcept(graphologiConcept, locales, additionalProper
     logDebug("Creating status: "+postResult.status + " endpoint :" + endpoint)
     if(postResult.status === 422) {
         if(postResult.response?.details === "URI already exists") {
-            let existingConcept = await getConceptFromContentFul(graphologiConcept.id);
+            let existingConcept = await getConceptFromContentFul(conceptURI);
             if(!existingConcept) {
                 let all = await getAllConcepts();
-                existingConcept = all.find(cs => cs.uri === graphologiConcept.id);
+                existingConcept = all.find(cs => cs.uri === conceptURI);
             }
             let putEndpoint = `https://api.contentful.com/organizations/${organizationId}/taxonomy/concepts/${existingConcept.sys.id}`;
             Object.keys(payload).forEach(key => {

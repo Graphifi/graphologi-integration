@@ -1,6 +1,8 @@
 import '@dotenvx/dotenvx/config';
 import {
+    addConceptSchemeToContext,
     copyDataPropertyValue,
+    initContext,
     listsEqual,
     typeConcept,
     typeConceptScheme,
@@ -66,17 +68,16 @@ describe("Contentful taxonomy service", () => {
 
     describe("test validateConceptSchemeCounts", () => {
         let context = {
-            'beforeUpdate': {
-                'conceptSchemes': []
-            },
             'locales': [{"code": "en"}, {"code": "en-US"}],
             'defaultLocaleCode': "en-US",
         }
 
+
         it('concept scheme limit happy path', async () => {
+            initContext(context);
             let data = []
             for(let i = 0; i < 10; i++) {
-                context['beforeUpdate']['conceptSchemes'].push({uri : "a"+i.toString()})
+                addConceptSchemeToContext(context, {uri : "a"+i.toString()});
             }
             for(let i = 0; i < 10; i++) {
                 data.push({id: "b"+i.toString(), type: typeConceptScheme})
@@ -88,6 +89,7 @@ describe("Contentful taxonomy service", () => {
         })
 
         it('concept scheme limit when payload concept schemes more than limit', async () => {
+            initContext(context);
             let data = [];
             for (let i = 0; i < 21; i++) {
                 data.push({id: "b"+i.toString(), type: typeConceptScheme})
@@ -96,29 +98,31 @@ describe("Contentful taxonomy service", () => {
             await validateConceptSchemeCounts(data, context, errorsCollector);
             expect(errorsCollector.length).to.be.eql(2);
             expect(errorsCollector[0]).to.be.eql(`Maximum 20 concept scheme allowed in Contentful. Payload contains 21.`);
-            expect(errorsCollector[1]).to.be.eql(`Maximum ${20} concept scheme allowed in Contentful. Payload adds ${21} new concept schemes but there are already ${10} concept schemes in Contentful.`);
+            expect(errorsCollector[1]).to.be.eql(`Maximum ${20} concept scheme allowed in Contentful. Payload adds ${21} new concept schemes and there are already ${0} concept schemes in Contentful.`);
         })
 
         it('concept scheme limit when payload plus existing concept schemes more than limit', async () => {
+            initContext(context);
+            for(let i = 0; i < 10; i++) {
+                addConceptSchemeToContext(context, {uri : "a"+i.toString(), type: typeConceptScheme});
+            }
             let data = [];
             for(let i = 0; i < 11; i++) {
-                data.push({id: "b"+i.toString(), type: typeConceptScheme})
+                data.push({id: "b"+i.toString(), type: typeConceptScheme});
             }
             let errorsCollector = []
             await validateConceptSchemeCounts(data, context, errorsCollector);
             expect(errorsCollector.length).to.be.eql(1);
-            expect(errorsCollector[0]).to.be.eql(`Maximum ${20} concept scheme allowed in Contentful. Payload adds ${11} new concept schemes but there are already ${10} concept schemes in Contentful.`);
+            expect(errorsCollector[0]).to.be.eql(`Maximum ${20} concept scheme allowed in Contentful. Payload adds ${11} new concept schemes and there are already ${10} concept schemes in Contentful.`);
         })
     })
 
     describe("test validateResources", () => {
         let context = {
-            'beforeUpdate' : {
-                'conceptSchemes': []
-            },
             'locales' : [{"code": "en"}, {"code": "en-US"}],
             'defaultLocaleCode' : "en-US",
         }
+        initContext(context);
 
         it('concept schemes resource properties happy path', async () => {
             let data = []
@@ -308,16 +312,15 @@ describe("Contentful taxonomy service", () => {
         it('concept notation is unique in payload and other concepts in CF', async () => {
             let data = [];
             let errorsCollector = [];
+            let concepts = [
+                {uri : 'x', 'notations': ['notation1']},
+            ];
+
             let context = {
-                'beforeUpdate' : {
-                    'conceptSchemes': [],
-                    'concepts': [
-                        {uri : 'x', 'notations': ['notation1']},
-                    ]
-                },
                 'locales' : [{"code": "en"}, {"code": "en-US"}],
                 'defaultLocaleCode' : "en-US",
             }
+            initContext(context, [],concepts);
             let testConcept1 = createTestConcept("a", "Label");
             testConcept1.notation.push("notation1");
 

@@ -10,15 +10,15 @@ import {logInfo} from "../../service/loggingUtil.js";
 
 export async function deleteConcept(concept) {
     let endpoint = `https://api.contentful.com/organizations/${organizationId}/taxonomy/concepts/${concept.sys.id}`;
-    console.log("deleteConcept ", endpoint);
+    logInfo("deleteConcept ", endpoint);
     const res = await fetch(endpoint, {
         method: 'DELETE',
         headers: {"Authorization": `Bearer ${accessToken}`, "x-contentful-version": concept.sys.version},
     }).catch(err => {
-        console.log("Delete failed", err)
+        logInfo("Delete failed", err)
     });
     if (res.status !== 204) {
-        console.log("Delete failed", res.status, res.json())
+        logInfo("Delete failed", res.status, res.json())
     }
 
 }
@@ -30,12 +30,14 @@ export async function deleteConceptScheme(csInCF) {
         method: 'DELETE',
         headers: {"Authorization": `Bearer ${accessToken}`, "x-contentful-version": csInCF.sys.version},
     }).catch(err => {
-        console.log("Delete failed", err)
+        logInfo("Delete failed : "+ err)
     });
     if (204 !== res.status) {
-        console.log("Delete failed", res.status, res.json())
+        logInfo("Delete failed "+ res.status +" "+ res.json())
     }
 }
+
+
 
 export async function deleteAllConcepts(ids) {
     let idsArray = toArray(ids);
