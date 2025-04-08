@@ -5,7 +5,7 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "export PORT=3005; nodemon ./bin/www ",
+    "start": "nodemon ./bin/www ",
     "test": "export LOG_CONSOLE=false;mocha --recursive --timeout 60000"
   },
   "dependencies": {
