@@ -10,7 +10,7 @@ import {logInfo} from "../../service/loggingUtil.js";
 
 export async function deleteConcept(concept) {
     let endpoint = `https://api.contentful.com/organizations/${organizationId}/taxonomy/concepts/${concept.sys.id}`;
-    logInfo("deleteConcept ", endpoint);
+    logInfo("deleteConcept : "+ endpoint);
     const res = await fetch(endpoint, {
         method: 'DELETE',
         headers: {"Authorization": `Bearer ${accessToken}`, "x-contentful-version": concept.sys.version},
