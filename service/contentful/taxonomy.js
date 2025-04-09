@@ -99,7 +99,15 @@ export function toArray(value) {
 }
 
 function parallelRequestLimit() {
-    return Number(process.env.CONTENTFUL_API_MAX_REQUESTS_IN_PARALLEL) || 5;
+    return Number(process.env.CONTENTFUL_API_MAX_REQUESTS_IN_PARALLEL) || 2;
+}
+
+function maxRetryLimitOnRateLimit() {
+    return Number(process.env.CONTENTFUL_API_MAX_RETRIES_ON_RATE_LIMIT_HIT) || 20;
+}
+
+function sleepTime() {
+    return Number(process.env.CONTENTFUL_API_SLEEP_MILLIS_ON_RATE_LIMIT_HIT) || 1100;
 }
 
 function addConceptToContext(context, concept) {
@@ -1125,17 +1133,17 @@ async function handleAPICallFailure(endpoint, request, res ) {
 async function fetchWithRetry(endpoint, request) {
     let result = undefined;
     let retryCount = 0;
-    while (result === undefined && retryCount < 3) {
+    while (result === undefined && retryCount < maxRetryLimitOnRateLimit()) {
        let result = await fetch(endpoint, request);
         if (isHttpRequestSuccess(result)) {
             return result;
         } else if(result.status === 429) {
             const data = await result.json();
             if(data.sys.id === "RateLimitExceeded") {
-                logDebug("Sleeping .... ");
-                await sleep(2000);
+                logDebug("RateLimitExceeded Sleeping : " + retryCount);
+                await sleep(sleepTime());
                 retryCount = retryCount + 1;
-                logDebug("Awake .... ");
+                logDebug("RateLimitExceeded Awake : "+retryCount);
             }
         } else {
             let message = await handleAPICallFailure(endpoint, request, result);
