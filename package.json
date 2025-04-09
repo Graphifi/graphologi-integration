@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "nodemon ./bin/www ",
-    "test": "export LOG_CONSOLE=false;mocha --recursive --timeout 60000"
+    "test": "export LOG_CONSOLE=false;c8 mocha --recursive --timeout 60000"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.39.0",
@@ -17,6 +17,7 @@
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
+    "c8": "^10.1.3",
     "chai": "^4.5.0",
     "chai-http": "^4.4.0",
     "mocha": "^11.1.0",
