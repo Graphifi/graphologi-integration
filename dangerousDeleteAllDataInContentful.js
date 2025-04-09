@@ -24,7 +24,7 @@ export async function clearAllData() {
 //Running this will wipe all the Taxonomy data in Contentful
 clearAllData().then(() => {
     if(run) {
-        console.log("All data cleared")
+        console.log("All taxonomy data cleared")
     } else {
         console.log("************************************")
         console.log("");
