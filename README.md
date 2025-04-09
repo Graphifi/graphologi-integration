@@ -22,4 +22,5 @@ CONTENTFUL_API_MAX_REQUESTS_IN_PARALLEL=2
 CONTENTFUL_API_MAX_RETRIES_ON_RATE_LIMIT_HIT=30
 CONTENTFUL_API_SLEEP_MILLIS_ON_RATE_LIMIT_HIT=1100
 ```
-- To start the application run `npm start` 
+- To start the application run `npm start`
+- 
