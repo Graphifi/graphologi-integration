@@ -119,11 +119,27 @@ describe("Contentful integration", () => {
             let taxonomy = createTaxonomy({depth: 2, conceptCount:2, baseIRI: "http://ex.com/1"});
             let data = {graph : taxonomy};
             await syncData(data);
+            let allConcepts = await getAllConcepts();
+            data.graph.forEach(gr => {
+                if(toArray(gr.type).includes(typeConcept)) {
+                    let uri = gr.id;
+                    let foundConcept = allConcepts.find(ac => ac.uri === uri);
+                    assertConceptsEqual(foundConcept, gr);
+                }
+            })
 
             let conceptCount = 10;
             taxonomy = createTaxonomy({depth: 1, conceptCount: conceptCount, baseIRI: "http://ex.com/1"});
             data = {graph : taxonomy};
             await syncData(data);
+            allConcepts = await getAllConcepts();
+            data.graph.forEach(gr => {
+                if(toArray(gr.type).includes(typeConcept)) {
+                    let uri = gr.id;
+                    let foundConcept = allConcepts.find(ac => ac.uri === uri);
+                    assertConceptsEqual(foundConcept, gr);
+                }
+            })
             //console.log(JSON.stringify(taxonomy, null, 2));
         });
     });

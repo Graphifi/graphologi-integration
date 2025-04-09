@@ -89,6 +89,6 @@ export function assertConceptsEqual(contentFulConcept, graphologiConcept) {
         })
     }
     if(graphologiConcept["notation"]) {
-        expect(contentFulConcept["notations"].length).to.be.eql(2);
+        expect(contentFulConcept["notations"].length).to.be.eql(graphologiConcept["notation"].length);
     }
 }

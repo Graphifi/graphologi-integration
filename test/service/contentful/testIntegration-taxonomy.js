@@ -202,6 +202,7 @@ describe("Contentful taxonomy integration", () => {
 
             let allConceptSchemes = await getAllConceptSchemes();
             let foundCS = allConceptSchemes.find(cs => cs.uri === conceptScheme.id);
+            expect(foundCS["prefLabel"]).not.be.eql(undefined);
             expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1");
 
             //Now add top concept1 and assert

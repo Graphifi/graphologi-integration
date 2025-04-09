@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.39.0",
+    "async": "^3.2.6",
     "express": "^5.1.0",
     "morgan": "^1.10.0",
     "winston": "^3.17.0",

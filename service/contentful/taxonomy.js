@@ -1,4 +1,5 @@
 import {isDebugLevel, logDebug, logInfo} from "../loggingUtil.js"
+import {mapLimit} from 'async';
 
 export const accessToken = process.env.CONTENTFUL_ACCESS_TOKEN;
 export const organizationId = process.env.CONTENTFUL_ORGANIZATION_ID;
@@ -97,6 +98,9 @@ export function toArray(value) {
     }
 }
 
+function parallelRequestLimit() {
+    return Number(process.env.CONTENTFUL_API_MAX_REQUESTS_IN_PARALLEL) || 5;
+}
 
 function addConceptToContext(context, concept) {
     if(!concept) {
@@ -210,19 +214,20 @@ async function createNewResources(data, context) {
     let allCSInCF = context['data']['conceptSchemes'];
     let csInPayload = data.filter(c => c.type === typeConceptScheme);
     let csToAdd = csInPayload.filter(cs => !allCSInCF.find(csInCF => csInCF.uri === cs.id));
-    for(let i = 0; i < csToAdd.length; i++) {
-        let cs = csToAdd[i];
+
+    await mapLimit(csToAdd, parallelRequestLimit(), async function(cs) {
         let conceptScheme = await createConceptScheme(cs, localesData);
         addConceptSchemeToContext(context, conceptScheme);
-    }
+    });
+
     let allCInCF = context['data']['concepts'];
     let cInPayload = data.filter(c => c.type === typeConcept);
     let cToAdd = cInPayload.filter(c => !allCInCF.find(cInCF => cInCF.uri === c.id));
-    for(let i = 0; i < cToAdd.length; i++) {
-        let c = cToAdd[i];
+
+    await mapLimit(cToAdd, parallelRequestLimit(), async function(c) {
         let concept = await createConcept(c, localesData, undefined, context);
         addConceptToContext(context, concept);
-    }
+    })
 }
 
 /*
@@ -357,6 +362,7 @@ function addPair(pair, collector, symmetric) {
  */
 async function deleteLeftOverConcepts(data, context) {
     logInfo('Start deleteLeftOverConcepts');
+    let toDelete = [];
     // Fetch all concept in CF
     let allCInCF = getConceptsFromContext(context);
     // - For each concept
@@ -376,12 +382,15 @@ async function deleteLeftOverConcepts(data, context) {
         if(payloadHasAllCSs) {
             let cInPayload = data.find(c => c.id === cCF.uri);
             if(!cInPayload) {
-                let endpoint = `https://api.contentful.com/organizations/${organizationId}/taxonomy/concepts/${cCF.sys.id}`;
-                await deleteToContentful(endpoint, cCF.sys.version);
-                removeConceptFromContext(context, cCF);
+                toDelete.push(cCF);
             }
         }
     }
+    await mapLimit(toDelete, parallelRequestLimit(), async function(cf) {
+        let endpoint = `https://api.contentful.com/organizations/${organizationId}/taxonomy/concepts/${cf.sys.id}`;
+        await deleteToContentful(endpoint, cf.sys.version);
+        removeConceptFromContext(context, cf);
+    })
 }
 
 
@@ -997,7 +1006,7 @@ async function getAllPages(pageLink) {
             method: 'GET',
             headers: {"Authorization": `Bearer ${accessToken}`}
         };
-        const res = await fetch(pageLink, {...request});
+        const res = await fetchWithRetry(pageLink, request);
         if (isHttpRequestSuccess(res)) {
             const data = await res.json();
             allItems = [...allItems, ...data.items];
@@ -1007,17 +1016,7 @@ async function getAllPages(pageLink) {
                 pageLink = undefined;
             }
         } else {
-            if(res.status === 429) {
-                const data = await res.json();
-                if(data.sys.id === "RateLimitExceeded") {
-                    logDebug("Sleeping .... ");
-                    await sleep(2000);
-                    logDebug("Awake .... ");
-                }
-            } else {
-                await handleAPICallFailure(pageLink, request, res);
-                pageLink = undefined;
-            }
+            pageLink = undefined;
         }
     }
     return allItems;
@@ -1025,9 +1024,6 @@ async function getAllPages(pageLink) {
 
 let postCounter  = 0 ;
 async function postToContentful(endpoint, payload) {
-    logInfo(`${postCounter} postToContentful endpoint : ` + endpoint);
-    postCounter = postCounter + 1;
-
     let request = {
         method: 'POST',
         headers: {
@@ -1036,18 +1032,11 @@ async function postToContentful(endpoint, payload) {
         },
         body: JSON.stringify(payload)
     };
-    const res = await fetch(endpoint, request);
-    if (isHttpRequestSuccess(res)) {
-        const data = await res.json();
-        return data;
-    } else {
-        let message = await handleAPICallFailure(endpoint, request, res);
-        return message;
+    let response = await fetchWithRetry(endpoint, request);
+    if(isHttpRequestSuccess(response)) {
+        return response.json();
     }
-}
-
-function isHttpRequestSuccess(res) {
-    return res.status > 199 && res.status < 299;
+    return response;
 }
 
 let putCounter = 0;
@@ -1064,7 +1053,7 @@ async function putToContentful(endpoint, payload, version) {
         },
         body: JSON.stringify(payload)
     };
-    const res = await fetch(endpoint, request);
+    const res = await fetchWithRetry(endpoint, request);
     if (isHttpRequestSuccess(res)) {
         const data = await res.json();
         return data;
@@ -1087,7 +1076,7 @@ async function patchToContentful(endpoint, payload, version) {
         },
         body: JSON.stringify(payload)
     };
-    const res = await fetch(endpoint, request);
+    const res = await fetchWithRetry(endpoint, request);
     if (isHttpRequestSuccess(res)) {
         const data = await res.json();
         return data;
@@ -1107,7 +1096,7 @@ async function deleteToContentful(endpoint, version) {
             "x-contentful-version" : version
         }
     };
-    const res = await fetch(endpoint, request);
+    const res = await fetchWithRetry(endpoint, request);
     if (isHttpRequestSuccess(res)) {
         return [];
     } else {
@@ -1130,6 +1119,33 @@ async function handleAPICallFailure(endpoint, request, res ) {
     };
     logInfo({"error" : "API call failure", data: message});
     return message;
+}
+
+
+async function fetchWithRetry(endpoint, request) {
+    let result = undefined;
+    let retryCount = 0;
+    while (result === undefined && retryCount < 3) {
+       let result = await fetch(endpoint, request);
+        if (isHttpRequestSuccess(result)) {
+            return result;
+        } else if(result.status === 429) {
+            const data = await result.json();
+            if(data.sys.id === "RateLimitExceeded") {
+                logDebug("Sleeping .... ");
+                await sleep(2000);
+                retryCount = retryCount + 1;
+                logDebug("Awake .... ");
+            }
+        } else {
+            let message = await handleAPICallFailure(endpoint, request, result);
+            return message;
+        }
+    }
+}
+
+function isHttpRequestSuccess(res) {
+    return res.status > 199 && res.status < 299;
 }
 
 
