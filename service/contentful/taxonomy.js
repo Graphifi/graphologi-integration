@@ -110,7 +110,7 @@ function sleepTime() {
     return Number(process.env.CONTENTFUL_API_SLEEP_MILLIS_ON_RATE_LIMIT_HIT) || 1100;
 }
 
-function addConceptToContext(context, concept) {
+export function addConceptToContext(context, concept) {
     if(!concept) {
         return
     }
@@ -475,9 +475,9 @@ export async function validateConceptCounts(data, context, errorsCollector) {
     let cInCF = context['data']['concepts'];
     let cInCFURIs = cInCF.map(cs => cs.uri);
     let cToAdd = concepts.filter(cs => !cInCFURIs.includes(cs.id));
-    let totalCinCF = cToAdd.length + cInCF;
+    let totalCinCF = cToAdd.length + cInCF.length;
     if (totalCinCF > cLimit) {
-        errorsCollector.push(`Maximum ${cLimit} concept scheme allowed in Contentful. Payload adds ${cToAdd} new concepts but there already ${cInCF.length} concepts in Contentful.`);
+        errorsCollector.push(`Maximum ${cLimit} concept allowed in Contentful. Payload adds ${cToAdd.length} new concepts and there are ${cInCF.length} concepts in Contentful.`);
     }
 }
 
@@ -486,14 +486,14 @@ export async function validateConceptCounts(data, context, errorsCollector) {
  */
 export async function validateConceptCountsInScheme(data, context, errorsCollector) {
     let csInCF = context['data']['conceptSchemes'];
-    let csInPayloadURIs = data.filter(c => c['type'] === typeConceptScheme).map(cs => cs.id);
+    let csInPayloadURIs = data.filter(c => toArray(c['type']).includes(typeConceptScheme)).map(cs => cs.id);
     const limit = 2000;
-    for (const csURI in csInPayloadURIs) {
+    csInPayloadURIs.forEach(csURI => {
         let cPayloadIds = data.filter(c => c['inScheme'] === csURI).map(c => c.id);
         if(cPayloadIds.length > limit) {
             errorsCollector.push(`Maximum ${limit} concepts allowed in a concept scheme. Payload has ${cPayloadIds.length} concepts in concept scheme with URI ${csURI}.`);
         }
-    }
+    });
 }
 
 /*

@@ -1,11 +1,11 @@
 import '@dotenvx/dotenvx/config';
 import {
-    addConceptSchemeToContext,
+    addConceptSchemeToContext, addConceptToContext,
     copyDataPropertyValue,
     initContext,
     listsEqual,
     typeConcept,
-    typeConceptScheme,
+    typeConceptScheme, validateConceptCounts, validateConceptCountsInScheme,
     validateConceptSchemeCounts,
     validateResources
 } from '../../../service/contentful/taxonomy.js'
@@ -114,6 +114,82 @@ describe("Contentful taxonomy service", () => {
             await validateConceptSchemeCounts(data, context, errorsCollector);
             expect(errorsCollector.length).to.be.eql(1);
             expect(errorsCollector[0]).to.be.eql(`Maximum ${20} concept scheme allowed in Contentful. Payload adds ${11} new concept schemes and there are already ${10} concept schemes in Contentful.`);
+        })
+    })
+
+    describe("test validateConceptCounts", () => {
+        let context = {}
+
+        it('concept limit happy path', async () => {
+            initContext(context);
+            let data = []
+            for(let i = 0; i < 10; i++) {
+                addConceptToContext(context, {uri : "a"+i.toString(), type: typeConcept});
+            }
+            for(let i = 0; i < 10; i++) {
+                data.push({id: "b"+i.toString(), type: typeConcept})
+            }
+            let errorsCollector = []
+            await validateConceptCounts(data, context, errorsCollector);
+            expect(errorsCollector.length).to.be.eql(0);
+        })
+
+        it('concept limit when payload has more', async () => {
+            initContext(context);
+            let data = []
+            for(let i = 0; i < 6001; i++) {
+                data.push({id: "b"+i.toString(), type: typeConcept})
+            }
+            let errorsCollector = []
+            await validateConceptCounts(data, context, errorsCollector);
+            expect(errorsCollector.length).to.be.eql(2);
+            expect(errorsCollector[0]).to.be.eql(`Maximum ${6000} concepts allowed in Contentful. Payload has ${6001} concepts.`);
+            expect(errorsCollector[1]).to.be.eql(`Maximum ${6000} concept allowed in Contentful. Payload adds ${6001} new concepts and there are 0 concepts in Contentful.`);
+        })
+
+        it('concept limit when payload and existing has more', async () => {
+            initContext(context);
+            let data = []
+            for(let i = 0; i < 4000; i++) {
+                addConceptToContext(context, {uri : "a"+i.toString(), type: typeConcept});
+            }
+            for(let i = 0; i < 2001; i++) {
+                data.push({id: "b"+i.toString(), type: typeConcept})
+            }
+            let errorsCollector = []
+            await validateConceptCounts(data, context, errorsCollector);
+            expect(errorsCollector.length).to.be.eql(1);
+            expect(errorsCollector[0]).to.be.eql(`Maximum ${6000} concept allowed in Contentful. Payload adds ${2001} new concepts and there are ${4000} concepts in Contentful.`);
+        })
+
+    })
+
+    describe("test validateConceptCountsInScheme", () => {
+        let context = {};
+        it('concept limit happy path', async () => {
+            initContext(context);
+            let data = []
+            let cs = {id : "CS1", type : typeConceptScheme};
+            data.push(cs);
+            for(let i = 0; i < 2000; i++) {
+                data.push(createTestConcept("a"+i.toString(), "Label", undefined,  cs.uri));
+            }
+            let errorsCollector = [];
+            await validateConceptCountsInScheme(data, context, errorsCollector);
+            expect(errorsCollector.length).to.be.eql(0);
+        })
+
+        it('concept limit when more', async () => {
+            initContext(context);
+            let data = []
+            let cs = {id : "CS1", type : typeConceptScheme};
+            data.push(cs);
+            for(let i = 0; i < 2001; i++) {
+                data.push(createTestConcept("a"+i.toString(), "Label", undefined,  cs.id));
+            }
+            let errorsCollector = [];
+            await validateConceptCountsInScheme(data, context, errorsCollector);
+            expect(errorsCollector.length).to.be.eql(1);
         })
     })
 
