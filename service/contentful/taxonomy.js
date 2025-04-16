@@ -230,9 +230,9 @@ async function createNewResources(data, context) {
 
     let allCInCF = context['data']['concepts'];
     let cInPayload = data.filter(c => c.type === typeConcept);
-    let cToAdd = cInPayload.filter(c => !allCInCF.find(cInCF => cInCF.uri === c.id));
+    //let cToAdd = cInPayload.filter(c => !allCInCF.find(cInCF => cInCF.uri === c.id));
 
-    await mapLimit(cToAdd, parallelRequestLimit(), async function(c) {
+    await mapLimit(cInPayload, parallelRequestLimit(), async function(c) {
         let concept = await createConcept(c, localesData, undefined, context);
         addConceptToContext(context, concept);
     })
