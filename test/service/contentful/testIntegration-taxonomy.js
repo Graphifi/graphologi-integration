@@ -215,6 +215,9 @@ describe("Contentful taxonomy integration", () => {
                 'inScheme' : conceptScheme.id
             }
             conceptScheme['hasTopConcept'] = concept1.id;
+            conceptScheme['title'] = {
+                "en-us": "CS 1 edit"
+            };
             data = {
                 "graph": [conceptScheme, concept1]
             }
@@ -222,7 +225,7 @@ describe("Contentful taxonomy integration", () => {
 
             allConceptSchemes = await getAllConceptSchemes();
             foundCS = allConceptSchemes.find(cs => cs.uri === conceptScheme.id);
-            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1");
+            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1 edit");
 
             let allConcepts = await getAllConcepts(foundCS.sys.id);
             let foundC1 = allConcepts.find(cs => cs.uri === concept1.id);
@@ -256,7 +259,7 @@ describe("Contentful taxonomy integration", () => {
 
             allConceptSchemes = await getAllConceptSchemes();
             foundCS = allConceptSchemes.find(cs => cs.uri === conceptScheme.id);
-            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1");
+            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1 edit");
 
             allConcepts = await getAllConcepts(foundCS.sys.id);
             foundC1 = allConcepts.find(cs => cs.uri === concept1.id);
@@ -293,7 +296,7 @@ describe("Contentful taxonomy integration", () => {
 
             allConceptSchemes = await getAllConceptSchemes();
             foundCS = allConceptSchemes.find(cs => cs.uri === conceptScheme.id);
-            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1");
+            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1 edit");
 
             allConcepts = await getAllConcepts(foundCS.sys.id);
             foundC1 = allConcepts.find(cs => cs.uri === concept1.id);
@@ -340,7 +343,7 @@ describe("Contentful taxonomy integration", () => {
 
             allConceptSchemes = await getAllConceptSchemes();
             foundCS = allConceptSchemes.find(cs => cs.uri === conceptScheme.id);
-            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1");
+            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1 edit");
 
             allConcepts = await getAllConcepts(foundCS.sys.id);
             foundC1 = allConcepts.find(cs => cs.uri === concept1.id);
@@ -390,7 +393,7 @@ describe("Contentful taxonomy integration", () => {
 
             allConceptSchemes = await getAllConceptSchemes();
             foundCS = allConceptSchemes.find(cs => cs.uri === conceptScheme.id);
-            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1");
+            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1 edit");
 
             allConcepts = await getAllConcepts(foundCS.sys.id);
             foundC1 = allConcepts.find(cs => cs.uri === concept1.id);
@@ -455,7 +458,7 @@ describe("Contentful taxonomy integration", () => {
 
             allConceptSchemes = await getAllConceptSchemes();
             foundCS = allConceptSchemes.find(cs => cs.uri === conceptScheme.id);
-            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1");
+            expect(foundCS["prefLabel"]["en-US"]).to.be.eql("CS 1 edit");
 
             allConcepts = await getAllConcepts(foundCS.sys.id);
             foundC1 = allConcepts.find(cs => cs.uri === concept1.id);

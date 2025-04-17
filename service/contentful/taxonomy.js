@@ -221,9 +221,9 @@ async function createNewResources(data, context) {
     let localesData = context['locales'];
     let allCSInCF = context['data']['conceptSchemes'];
     let csInPayload = data.filter(c => c.type === typeConceptScheme);
-    let csToAdd = csInPayload.filter(cs => !allCSInCF.find(csInCF => csInCF.uri === cs.id));
+    //let csToAdd = csInPayload.filter(cs => !allCSInCF.find(csInCF => csInCF.uri === cs.id));
 
-    await mapLimit(csToAdd, parallelRequestLimit(), async function(cs) {
+    await mapLimit(csInPayload, parallelRequestLimit(), async function(cs) {
         let conceptScheme = await createConceptScheme(cs, localesData);
         addConceptSchemeToContext(context, conceptScheme);
     });
